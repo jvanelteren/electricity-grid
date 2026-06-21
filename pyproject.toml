@@ -1,0 +1,20 @@
+[project]
+name = "electricity-course"
+version = "0.1.0"
+description = "A website that teaches the electricity system through simple interactive games."
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.138.0",
+    "jinja2>=3.1.6",
+    "markdown>=3.10.2",
+    "uvicorn[standard]>=0.49.0",
+]
+
+[dependency-groups]
+dev = [
+    "beautifulsoup4>=4.15.0",
+    "markdownify>=1.2.2",
+    "playwright>=1.60.0",
+    "pypdf>=6.13.3",
+    "pytest>=9.1.1",
+]

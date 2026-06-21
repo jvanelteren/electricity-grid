@@ -1,0 +1,56 @@
+{
+  "retrieved": "2026-06-21",
+  "pages": [
+    {
+      "url": "https://www.tennet.eu/nl-en/markets/ancillary-services",
+      "status": 200,
+      "file": "nl-en-markets-ancillary-services.md",
+      "words": 2985
+    },
+    {
+      "url": "https://www.tennet.eu/nl-en/markets/dutch-market/balancing-markets",
+      "status": 403
+    },
+    {
+      "url": "https://www.tennet.eu/markets/ancillary-services/fcr-documents",
+      "status": 403
+    },
+    {
+      "url": "https://www.tennet.eu/nl-en/markets/transparency-data/merit-order-list",
+      "status": 403
+    },
+    {
+      "url": "https://www.tennet.eu/nl-en/grids-and-markets/transparency-data-netherlands/settled-imbalance-volumes",
+      "status": 403
+    },
+    {
+      "url": "(manually saved file: aFRR documents.htm)",
+      "status": 200,
+      "file": "afrr-documents.md",
+      "words": 112,
+      "via": "saved-html"
+    },
+    {
+      "url": "(manually saved file: Balancing markets.htm)",
+      "status": 200,
+      "file": "balancing-markets.md",
+      "words": 1215,
+      "via": "saved-html"
+    },
+    {
+      "url": "(manually saved file: FCR documents.htm)",
+      "status": 200,
+      "file": "fcr-documents.md",
+      "words": 157,
+      "via": "saved-html"
+    },
+    {
+      "url": "(manually saved file: Merit order list.htm)",
+      "status": 200,
+      "file": "merit-order-list.md",
+      "words": 367,
+      "via": "saved-html"
+    }
+  ],
+  "pdfs": []
+}

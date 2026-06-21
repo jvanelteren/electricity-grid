@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Electricity Course — Games{% endblock %}
+{% block content %}
+<section class="intro">
+  <h1>Understand the electricity system through games</h1>
+  <p>Each game focuses on one idea about how electricity is generated,
+     moved, and balanced. Pick one to start — or read the
+     <a href="/learn">Learn</a> page for how real grid balancing works,
+     based on TenneT's public documentation.</p>
+</section>
+
+<section class="game-grid">
+  {% for game in games %}
+  <article class="game-card {{ 'is-disabled' if not game.available }}">
+    <h2>{{ game.title }}</h2>
+    <p class="summary">{{ game.summary }}</p>
+    <p class="concept"><strong>Concept:</strong> {{ game.concept }}</p>
+    {% if game.available %}
+      <a class="play-button" href="/games/{{ game.slug }}">Play →</a>
+    {% else %}
+      <span class="coming-soon">Coming soon</span>
+    {% endif %}
+  </article>
+  {% endfor %}
+</section>
+{% endblock %}

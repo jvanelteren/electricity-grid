@@ -1,0 +1,160 @@
+:root {
+  --bg: #0e1726;
+  --panel: #16223a;
+  --accent: #ffd24d;
+  --text: #e7ecf3;
+  --muted: #8fa0b8;
+  --safe: #2e7d4f;
+  --danger: #c0392b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.site-header {
+  padding: 1.5rem 2rem 1rem;
+  border-bottom: 1px solid #233247;
+}
+.brand { font-size: 1.4rem; font-weight: 700; color: var(--accent); text-decoration: none; }
+.tagline { margin: 0.25rem 0 0; color: var(--muted); }
+.site-nav { margin-top: 0.5rem; display: flex; gap: 1.25rem; }
+.site-nav a { color: var(--text); text-decoration: none; font-weight: 600; }
+.site-nav a:hover { color: var(--accent); }
+.intro a, .game-note a { color: var(--accent); }
+
+main { max-width: 960px; margin: 0 auto; padding: 2rem; }
+
+.intro h1 { margin-top: 0; }
+.intro p { color: var(--muted); }
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+.game-card {
+  background: var(--panel);
+  border: 1px solid #233247;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.game-card.is-disabled { opacity: 0.55; }
+.game-card h2 { margin: 0 0 0.5rem; }
+.game-card .summary { margin: 0 0 0.75rem; }
+.game-card .concept { color: var(--muted); font-size: 0.9rem; }
+
+.play-button, .game-buttons button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background: var(--accent);
+  color: #1a1a1a;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.coming-soon { color: var(--muted); font-style: italic; }
+
+/* --- Game page --- */
+.game-page .concept { color: var(--muted); max-width: 60ch; }
+.game-note {
+  background: var(--panel);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+  max-width: 70ch;
+  font-size: 0.95rem;
+}
+
+/* --- Learn / prose page --- */
+.prose { max-width: 74ch; margin: 0 auto; }
+.prose h1 { font-size: 1.9rem; }
+.prose h2 { margin-top: 2rem; border-bottom: 1px solid #233247; padding-bottom: 0.3rem; }
+.prose h3 { margin-top: 1.5rem; color: var(--accent); }
+.prose a { color: var(--accent); }
+.prose code {
+  background: #0b1220; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.9em;
+}
+.prose blockquote {
+  margin: 1rem 0; padding: 0.5rem 1rem; border-left: 3px solid var(--muted);
+  color: var(--muted); background: var(--panel); border-radius: 6px;
+}
+.prose table {
+  border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: 0.92rem;
+}
+.prose th, .prose td {
+  border: 1px solid #233247; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top;
+}
+.prose th { background: var(--panel); }
+.game-stage {
+  background: var(--panel);
+  border: 1px solid #233247;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.gauges { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.gauge { display: flex; flex-direction: column; }
+.gauge-label { color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.gauge-value { font-size: 1.6rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.freq-bar {
+  position: relative;
+  height: 28px;
+  margin: 1.5rem 0;
+  background: linear-gradient(90deg, var(--danger), var(--safe) 35%, var(--safe) 65%, var(--danger));
+  border-radius: 6px;
+}
+.freq-needle {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 4px;
+  height: 40px;
+  background: #fff;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: left 0.15s linear;
+}
+
+.controls { margin-top: 1rem; }
+.controls label { display: block; color: var(--muted); margin-bottom: 0.5rem; }
+.controls input[type="range"] { width: 100%; }
+.game-buttons { margin-top: 1rem; display: flex; gap: 0.75rem; }
+.status { margin-top: 1rem; color: var(--muted); }
+
+.explainer {
+  margin-top: 1rem;
+  padding: 1rem 1.25rem;
+  background: #20121a;
+  border: 1px solid var(--danger);
+  border-left: 4px solid var(--danger);
+  border-radius: 8px;
+  max-width: 70ch;
+}
+.explainer h3 { margin: 0 0 0.5rem; color: #ff8a7a; }
+.explainer p { margin: 0 0 0.75rem; }
+.explainer .explainer-link a { color: var(--accent); }
+#explainer-retry {
+  background: var(--accent);
+  color: #1a1a1a;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.site-footer { padding: 2rem; text-align: center; }
+.site-footer a { color: var(--accent); }
