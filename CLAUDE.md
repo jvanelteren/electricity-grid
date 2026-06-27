@@ -31,3 +31,17 @@ uv run scripts/smoke_test.py      # end-to-end smoke test (Playwright): routes r
 ## Didactic design (how to build games)
 
 The audience is a **curious layperson with zero grid knowledge**, so invert the expert-first source material: start from lived experience (flip a switch → lights on), build intuition through play, then attach real names. Two levels, switched by an **in-game toggle** on the same simulation — *Explore* (analogies, no acronyms, forgiving) and *Operate* (real terms like FCR/aFRR/50 Hz/MW, realistic tolerances, market layer). They teach the **same truth at different resolution** — nothing in Explore may become false in Operate. Principles: play before vocabulary; one concept per game; concrete → analogy → real term; failure teaches (match the blackout-explainer wording to the active level); depth is opt-in; maintain a plain-term ↔ real-term vocabulary ladder so the levels stay honest.
+
+The **balance game is the reference implementation**: [static/js/balance.js](static/js/balance.js) drives all level differences from a single `LEVELS` config (labels, units, tolerances, copy, and a `showCost`/`showHz` toggle), defaults to Explore, and persists the choice in `localStorage`. Copy that pattern for new games. Note: a gauge hidden via the `hidden` attribute needs `.gauge[hidden] { display: none }` in CSS, since `.gauge { display: flex }` otherwise overrides it.
+
+## The game arc (learning path)
+
+The games form one **ordered arc that zooms out in space and time** — seconds in one control room → a continent over a day. Each game reveals an assumption the previous one quietly made (G1 lets you slide a magic power knob, assumes power teleports, assumes you're alone; later games pay off each debt). Build order = play order, because each game's copy reuses intuition from the one before. The homepage is a learning path, not a flat grid.
+
+1. **Balance the Grid** *(built)* — supply must equal demand every instant; frequency is the signal. Explore: spinning wheel. Operate: FCR/aFRR, 50 Hz, imbalance €.
+2. **Build the Energy Mix** *(next; teased in registry)* — sources differ on cost, carbon, and controllability (variable vs dispatchable). **Storage & demand-flexibility live here** as special "buffer" sources. Pays off G1: half your fleet won't take orders, so balancing is hard.
+3. **Get It There (Transmission)** — the grid is a network of lines with capacity limits; bottlenecks force re-routing/redispatch. Operate: line MW limits, congestion, N-1, voltage levels. Pays off G1–2: power was teleporting.
+4. **The Market / Merit Order** *(its own game)* — a day-ahead auction stacks bids cheapest-first; the marginal plant sets one price for all. Connects to the imbalance € already in G1's Operate.
+5. **One Synchronous Europe** — one synchronous machine; a fault in France nudges Dutch frequency; neighbours share reserves and net imbalances (PICASSO/IGCC, ENTSO-E). Capstone integrating G1–4.
+
+Pillars: physical elements = G2+G3; balancing = G1+G5; transmission = G3+G5; G4 (market) is the economic glue. G4+G5 are the opt-in "deepen" tier.

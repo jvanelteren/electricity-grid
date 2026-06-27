@@ -11,38 +11,153 @@
 //     you remove the imbalance itself, which is what actually pulls frequency
 //     back to exactly 50 Hz. In the real grid this is dispatched automatically
 //     by the TSO; here you do it by hand.
+//
+// The same simulation runs at two resolutions, chosen by the Explore/Operate
+// toggle (see the didactic guidance in CLAUDE.md): Explore hides the vocabulary
+// and numbers and is more forgiving; Operate uses the real terms, tighter
+// tolerances, and exposes the balancing-market (imbalance settlement) layer.
+// Nothing shown in Explore becomes false in Operate — same truth, more pixels.
 
 (function () {
   "use strict";
 
   const NOMINAL_HZ = 50;
-  const SAFE_BAND = 0.1;       // ± Hz: "balanced" (normal operational band)
-  const BLACKOUT_BAND = 0.8;   // ± Hz: load shedding / blackout
-  const TICK_MS = 100;
-
   // Frequency dynamics: df = SENSITIVITY*imbalance - FCR_DAMPING*(f - 50).
   // At steady state f - 50 = (SENSITIVITY/FCR_DAMPING) * imbalance, so a
-  // leftover imbalance leaves an offset only the player (aFRR) can close.
+  // leftover imbalance leaves an offset only the player (aFRR) can close. The
+  // physics is identical across levels; only tolerances and presentation differ.
   const SENSITIVITY = 0.00008;
   const FCR_DAMPING = 0.02;
+  const COST_RATE = 0.01; // € accrued per MW of imbalance per tick (Operate only)
+
+  const LEVELS = {
+    explore: {
+      name: "Explore",
+      hint: "Plain language, forgiving. Get the feel for it.",
+      safeBand: 0.25,    // ± Hz counted as "steady"
+      blackoutBand: 1.2, // ± Hz before the lights go out (forgiving)
+      tickMs: 140,
+      demandScale: 0.55, // gentler demand swings
+      showHz: false,
+      showCost: false,
+      unit: "",
+      labels: { frequency: "Grid speed", demand: "Being used", supply: "You're making" },
+      controlLabel: "Your power — slide it to match what people are using",
+      note:
+        "<p>You run the grid. Think of it as one giant <strong>spinning wheel</strong> that " +
+        "everyone draws power from. Make exactly as much as people are using and it spins " +
+        "steadily. Make too little and it slows down; too much and it speeds up — let it drift " +
+        "too far and the lights go out.</p>" +
+        "<p>Little wobbles are smoothed out for you automatically. Your job: slide your power to " +
+        "keep up with demand and hold the wheel steady.</p>" +
+        "<details><summary>Want the real names?</summary>" +
+        "<p>The “spinning wheel” speed is the grid <strong>frequency</strong> (50&nbsp;Hz in Europe). " +
+        "The automatic smoothing is <strong>FCR</strong> (primary reserve); the power you slide is " +
+        "<strong>aFRR</strong> (regulating power). Switch to <strong>Operate</strong> to play with the " +
+        "real terms and numbers. <a href=\"/learn\">How this works in the real grid →</a></p></details>",
+      status: "Press Start. Keep your power matched to what people are using and hold the wheel steady.",
+      balanced: "✅ Steady — the wheel is holding. Keep matching demand.",
+      drift: function (low) {
+        return low
+          ? "The wheel is slowing — people are using more than you're making. Slide your power up."
+          : "The wheel is speeding up — you're making more than people use. Slide your power down.";
+      },
+      explainer: function (low) {
+        return low
+          ? {
+              title: "The lights went out — the wheel slowed too far",
+              body:
+                "People were using more power than you were making, so the spinning wheel slowed " +
+                "until it stalled. The automatic smoothing can soften a dip but can't fill a lasting " +
+                "gap — only you can, by sliding your power up to match. Real grids start switching " +
+                "off customers before it gets this far, to stop a total collapse.",
+            }
+          : {
+              title: "The lights went out — the wheel spun too fast",
+              body:
+                "You were making more power than people were using, so the wheel sped up out of " +
+                "control. The automatic smoothing slows the rise but can't soak up the extra — you " +
+                "needed to slide your power down. Real grids switch off some generation to cope.",
+            };
+      },
+    },
+    operate: {
+      name: "Operate",
+      hint: "Real terms, tight tolerances, market costs. The real job.",
+      safeBand: 0.1,
+      blackoutBand: 0.8,
+      tickMs: 100,
+      demandScale: 1.0,
+      showHz: true,
+      showCost: true,
+      unit: " MW",
+      labels: { frequency: "Frequency", demand: "Demand", supply: "Supply" },
+      controlLabel: "Your regulating power (aFRR) — match it to demand",
+      note:
+        "<p>You are the control room. <strong>FCR</strong> (primary reserve) reacts automatically " +
+        "in seconds to <em>contain</em> a frequency dip — but it leaves a small offset from " +
+        "50&nbsp;Hz. You provide <strong>aFRR</strong> (regulating power): match your output to " +
+        "demand to pull frequency back to exactly 50&nbsp;Hz.</p>" +
+        "<p>Every MW you are out of balance accrues an <strong>imbalance settlement</strong> cost — " +
+        "the balancing market charges for deviation. <a href=\"/learn\">How this works in the real grid →</a></p>",
+      status: "Press Start. Demand will swing around — move your aFRR output to track it and hold frequency at 50 Hz.",
+      balanced: "✅ Balanced — frequency at 50 Hz. Keep tracking demand.",
+      drift: function (low) {
+        const dir = low ? "low (demand > supply)" : "high (supply > demand)";
+        return "FCR is containing the deviation, but frequency is " + dir +
+          ". Move your aFRR toward demand to restore 50 Hz.";
+      },
+      explainer: function (low) {
+        return low
+          ? {
+              title: "Under-frequency: demand outran supply",
+              body:
+                "Demand exceeded your generation, so the grid slowed below 50 Hz. FCR (primary " +
+                "reserve) only contains the dip — it can't close a sustained shortfall. You needed " +
+                "to raise your aFRR to match demand. In the real grid, if frequency keeps falling, " +
+                "TSOs shed load (disconnect customers) around 49 Hz to stop a full collapse.",
+            }
+          : {
+              title: "Over-frequency: supply outran demand",
+              body:
+                "Your generation exceeded demand, pushing frequency above 50 Hz. FCR damps the rise " +
+                "but doesn't remove the surplus — you needed to lower your aFRR. In the real grid, " +
+                "generation is curtailed; a sustained over-frequency can trip generators offline.",
+            };
+      },
+    },
+  };
+
+  const STORAGE_KEY = "balance-level";
+  const DEFAULT_LEVEL = "explore"; // beginner-first audience
 
   const el = {
     frequency: document.getElementById("frequency"),
+    frequencyLabel: document.getElementById("frequency-label"),
     demand: document.getElementById("demand"),
+    demandLabel: document.getElementById("demand-label"),
     supply: document.getElementById("supply"),
+    supplyLabel: document.getElementById("supply-label"),
+    costGauge: document.getElementById("cost-gauge"),
+    cost: document.getElementById("cost"),
     score: document.getElementById("score"),
     needle: document.getElementById("needle"),
     generation: document.getElementById("generation"),
+    generationLabel: document.getElementById("generation-label"),
     generationValue: document.getElementById("generation-value"),
     start: document.getElementById("start-btn"),
     reset: document.getElementById("reset-btn"),
     status: document.getElementById("status"),
+    note: document.getElementById("game-note"),
+    levelHint: document.getElementById("level-hint"),
+    levelButtons: Array.prototype.slice.call(document.querySelectorAll(".level-btn")),
     explainer: document.getElementById("explainer"),
     explainerTitle: document.getElementById("explainer-title"),
     explainerBody: document.getElementById("explainer-body"),
     explainerRetry: document.getElementById("explainer-retry"),
   };
 
+  let level = LEVELS[DEFAULT_LEVEL];
   let state = initialState();
   let timer = null;
 
@@ -52,6 +167,7 @@
       demand: 1000,
       demandTarget: 1000,
       score: 0,
+      cost: 0,
       running: false,
       ticks: 0,
     };
@@ -60,20 +176,31 @@
   function pseudoDemand(ticks) {
     // Smooth-ish wandering demand from layered sines — deterministic, no deps.
     const t = ticks / 10;
-    return 1000 + 350 * Math.sin(t * 0.7) + 200 * Math.sin(t * 0.23 + 1);
+    const swing = 350 * Math.sin(t * 0.7) + 200 * Math.sin(t * 0.23 + 1);
+    return 1000 + swing * level.demandScale;
+  }
+
+  // The frequency readout: precise Hz in Operate, a plain qualitative word in
+  // Explore (the number is the same truth, just hidden at this resolution).
+  function frequencyText() {
+    if (level.showHz) return state.frequency.toFixed(2) + " Hz";
+    const deviation = state.frequency - NOMINAL_HZ;
+    if (Math.abs(deviation) <= level.safeBand) return "Steady";
+    return deviation < 0 ? "Slowing" : "Racing";
   }
 
   function render() {
     const supply = Number(el.generation.value);
-    el.frequency.textContent = state.frequency.toFixed(2) + " Hz";
-    el.demand.textContent = Math.round(state.demand) + " MW";
-    el.supply.textContent = supply + " MW";
+    el.frequency.textContent = frequencyText();
+    el.demand.textContent = Math.round(state.demand) + level.unit;
+    el.supply.textContent = supply + level.unit;
     el.score.textContent = Math.round(state.score);
-    el.generationValue.textContent = supply + " MW";
+    el.cost.textContent = "€" + Math.round(state.cost);
+    el.generationValue.textContent = supply + level.unit;
 
-    // Needle position across the bar (49.2 .. 50.8 Hz).
-    const min = NOMINAL_HZ - BLACKOUT_BAND;
-    const max = NOMINAL_HZ + BLACKOUT_BAND;
+    // Needle position across the bar, scaled to this level's blackout range.
+    const min = NOMINAL_HZ - level.blackoutBand;
+    const max = NOMINAL_HZ + level.blackoutBand;
     const pct = Math.max(0, Math.min(1, (state.frequency - min) / (max - min)));
     el.needle.style.left = pct * 100 + "%";
   }
@@ -90,46 +217,33 @@
     state.frequency += imbalance * SENSITIVITY;
     state.frequency += (NOMINAL_HZ - state.frequency) * FCR_DAMPING;
 
+    // Imbalance settlement: deviation from balance costs money (Operate layer).
+    state.cost += Math.abs(imbalance) * COST_RATE;
+
     const deviation = Math.abs(state.frequency - NOMINAL_HZ);
-    if (deviation <= SAFE_BAND) {
+    if (deviation <= level.safeBand) {
       state.score += 1;
-      el.status.textContent = "✅ Balanced — frequency at 50 Hz. Keep tracking demand.";
+      el.status.textContent = level.balanced;
     } else {
-      const dir = state.frequency < NOMINAL_HZ ? "low (demand > supply)" : "high (supply > demand)";
-      el.status.textContent =
-        `FCR is containing the deviation, but frequency is ${dir}. ` +
-        "Move your aFRR toward demand to restore 50 Hz.";
+      el.status.textContent = level.drift(state.frequency < NOMINAL_HZ);
     }
 
-    if (deviation >= BLACKOUT_BAND) {
+    if (deviation >= level.blackoutBand) {
       stop();
       el.status.textContent =
-        "⚠ Blackout! Frequency left the safe range. Final score: " +
-        Math.round(state.score) + ".";
+        "⚠ Blackout! Final score: " + Math.round(state.score) +
+        (level.showCost ? ", imbalance cost €" + Math.round(state.cost) : "") + ".";
       showExplainer(state.frequency < NOMINAL_HZ);
     }
 
     render();
   }
 
-  // Tie the loss back to the concept that caused it.
+  // Tie the loss back to the concept that caused it, in this level's language.
   function showExplainer(underFrequency) {
-    if (underFrequency) {
-      el.explainerTitle.textContent = "Under-frequency: demand outran supply";
-      el.explainerBody.textContent =
-        "Demand exceeded your generation, so the grid slowed below 50 Hz. " +
-        "FCR (primary reserve) only contains the dip — it can't close a " +
-        "sustained shortfall. You needed to raise your aFRR to match demand. " +
-        "In the real grid, if frequency keeps falling, TSOs shed load " +
-        "(disconnect customers) around 49 Hz to stop a full collapse.";
-    } else {
-      el.explainerTitle.textContent = "Over-frequency: supply outran demand";
-      el.explainerBody.textContent =
-        "Your generation exceeded demand, pushing frequency above 50 Hz. " +
-        "FCR damps the rise but doesn't remove the surplus — you needed to " +
-        "lower your aFRR. In the real grid, generation is curtailed; a " +
-        "sustained over-frequency can trip generators offline to protect them.";
-    }
+    const text = level.explainer(underFrequency);
+    el.explainerTitle.textContent = text.title;
+    el.explainerBody.textContent = text.body;
     el.explainer.hidden = false;
   }
 
@@ -138,7 +252,7 @@
     state.running = true;
     el.start.textContent = "Running…";
     el.start.disabled = true;
-    timer = setInterval(tick, TICK_MS);
+    timer = setInterval(tick, level.tickMs);
   }
 
   function stop() {
@@ -154,9 +268,28 @@
     state = initialState();
     el.generation.value = 1000;
     el.explainer.hidden = true;
-    el.status.textContent =
-      "Press Start. Demand will swing around — move your aFRR output to track it and hold frequency at 50 Hz.";
+    el.status.textContent = level.status;
     render();
+  }
+
+  // Apply a level's labels, copy, tolerances and visibility, then reset. Called
+  // on load and whenever the player switches level.
+  function applyLevel(name) {
+    level = LEVELS[name] || LEVELS[DEFAULT_LEVEL];
+    el.frequencyLabel.textContent = level.labels.frequency;
+    el.demandLabel.textContent = level.labels.demand;
+    el.supplyLabel.textContent = level.labels.supply;
+    el.generationLabel.textContent = level.controlLabel;
+    el.note.innerHTML = level.note;
+    el.levelHint.textContent = level.hint;
+    el.costGauge.hidden = !level.showCost;
+    el.levelButtons.forEach(function (btn) {
+      const active = btn.dataset.level === name;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+    try { localStorage.setItem(STORAGE_KEY, name); } catch (e) { /* ignore */ }
+    reset();
   }
 
   el.start.addEventListener("click", start);
@@ -166,6 +299,18 @@
     start();
   });
   el.generation.addEventListener("input", render);
+  el.levelButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      if (btn.dataset.level === levelName()) return;
+      applyLevel(btn.dataset.level);
+    });
+  });
 
-  reset();
+  function levelName() {
+    return level === LEVELS.operate ? "operate" : "explore";
+  }
+
+  let saved = DEFAULT_LEVEL;
+  try { saved = localStorage.getItem(STORAGE_KEY) || DEFAULT_LEVEL; } catch (e) { /* ignore */ }
+  applyLevel(LEVELS[saved] ? saved : DEFAULT_LEVEL);
 })();

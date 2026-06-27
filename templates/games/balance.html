@@ -5,27 +5,32 @@
   <h1>{{ game.title }}</h1>
   <p class="concept">{{ game.concept }}</p>
 
-  <div class="game-note">
-    You are the control room. <strong>FCR</strong> (primary reserve) reacts
-    automatically in seconds to <em>contain</em> a frequency dip — but it leaves
-    a small offset from 50&nbsp;Hz. You provide <strong>aFRR</strong> (regulating
-    power): match your output to demand to pull frequency back to exactly
-    50&nbsp;Hz. <a href="/learn">How this works in the real grid →</a>
+  <div class="level-toggle" role="group" aria-label="Difficulty level">
+    <span class="level-toggle-label">Level</span>
+    <button type="button" class="level-btn" id="level-explore" data-level="explore">Explore</button>
+    <button type="button" class="level-btn" id="level-operate" data-level="operate">Operate</button>
+    <span class="level-hint" id="level-hint"></span>
   </div>
+
+  <div class="game-note" id="game-note"></div>
 
   <div class="game-stage">
     <div class="gauges">
       <div class="gauge">
-        <span class="gauge-label">Frequency</span>
+        <span class="gauge-label" id="frequency-label">Frequency</span>
         <span class="gauge-value" id="frequency">50.00 Hz</span>
       </div>
       <div class="gauge">
-        <span class="gauge-label">Demand</span>
+        <span class="gauge-label" id="demand-label">Demand</span>
         <span class="gauge-value" id="demand">0 MW</span>
       </div>
       <div class="gauge">
-        <span class="gauge-label">Supply</span>
+        <span class="gauge-label" id="supply-label">Supply</span>
         <span class="gauge-value" id="supply">0 MW</span>
+      </div>
+      <div class="gauge" id="cost-gauge" hidden>
+        <span class="gauge-label">Balancing cost</span>
+        <span class="gauge-value" id="cost">€0</span>
       </div>
       <div class="gauge">
         <span class="gauge-label">Score</span>
@@ -39,7 +44,7 @@
     </div>
 
     <div class="controls">
-      <label for="generation">Your regulating power (aFRR) — match it to demand</label>
+      <label for="generation" id="generation-label">Your regulating power (aFRR) — match it to demand</label>
       <input type="range" id="generation" min="0" max="2000" value="1000" step="10">
       <span id="generation-value">1000 MW</span>
     </div>
@@ -49,8 +54,7 @@
       <button id="reset-btn">Reset</button>
     </div>
 
-    <p class="status" id="status">Press Start. Demand will swing around — move
-       your aFRR output to track it and hold frequency at 50 Hz.</p>
+    <p class="status" id="status"></p>
 
     <div class="explainer" id="explainer" hidden>
       <h3 id="explainer-title"></h3>
