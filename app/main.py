@@ -1,4 +1,4 @@
-"""FastAPI application for the Electricity Course site.
+"""FastAPI application for the Electricity Grid site.
 
 Serves a landing page listing the available games and a page per game.
 Run locally with::
@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 LEARN_DOC = BASE_DIR / "docs" / "european-grid-balancing.md"
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
-app = FastAPI(title="Electricity Course")
+app = FastAPI(title="Electricity Grid")
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
 
 # Links to local source files / scripts aren't served on the site; drop them to

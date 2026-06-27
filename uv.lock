@@ -68,7 +68,7 @@ wheels = [
 ]
 
 [[package]]
-name = "electricity-course"
+name = "electricity-grid"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [

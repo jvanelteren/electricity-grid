@@ -7,6 +7,12 @@ import urllib.request
 
 from playwright.sync_api import sync_playwright
 
+# The pages use unicode (stars, check marks); keep console output from choking.
+try:
+    sys.stdout.reconfigure(encoding="utf-8")
+except Exception:
+    pass
+
 PORT = 8021
 BASE = f"http://127.0.0.1:{PORT}"
 
@@ -53,6 +59,35 @@ def main():
                 f"freq={page.inner_text('#frequency')}  "
                 f"score={page.inner_text('#score')}"
             )
+            # Energy Mix: Explore (checkboxes) and Operate (sliders) both
+            # simulate, draw the chart, and award stars without JS errors.
+            page.goto(f"{BASE}/games/mix")
+            targets = page.inner_text("#mix-targets")
+            for box in page.locator("#sources-grid input[type=checkbox]").all():
+                box.check()
+            page.click("#simulate-btn")
+            time.sleep(0.3)
+            print(
+                f"/games/mix explore  targets={bool(targets)}  "
+                f"stars='{page.inner_text('#mix-stars')}'  "
+                f"cost={page.inner_text('#cost')}  "
+                f"blackouts={page.inner_text('#blackouts')}"
+            )
+
+            page.click("#level-operate")
+            sliders = page.locator("#sources-grid input[type=range]")
+            for i in range(sliders.count()):
+                sliders.nth(i).fill("100")
+            page.click("#simulate-btn")
+            time.sleep(0.3)
+            print(
+                f"/games/mix operate  sliders={sliders.count()}  "
+                f"stars='{page.inner_text('#mix-stars')}'  "
+                f"cost={page.inner_text('#cost')}  "
+                f"carbon={page.inner_text('#carbon')}  "
+                f"blackouts={page.inner_text('#blackouts')}"
+            )
+
             print("pageerrors:", errors or "none")
     finally:
         server.terminate()

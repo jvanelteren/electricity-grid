@@ -20,6 +20,7 @@
       name: "Explore",
       hint: "Cheapest bid wins, the marginal bid sets the price for all.",
       unit: "",
+      scenario: "An auction decides which plants run. All bidders submit a price for their power. The auctioneer activates the cheapest bids first until demand is covered. The last bid activated (the marginal one) sets the price everyone gets paid. Can you bid low enough to run, and high enough to profit?",
       note:
         "<p>An auction decides which plants run today. Everyone bids a price. The " +
         "auctioneer stacks all bids cheapest-first and activates enough to cover " +
@@ -44,18 +45,19 @@
       name: "Operate",
       hint: "Real sources, realistic prices, complex merit order. The actual market.",
       unit: " MW",
+      scenario: "Day-ahead energy market. You bid a price for your generation capacity. The <term data-term=\"tso\">TSO</term> stacks all bids cheapest-first (the <term data-term=\"merit_order\">merit order</term>) and activates enough to cover demand. The <term data-term=\"clearing_price\">clearing price</term> is the highest activated bid — you earn that price, not your bid. Bid too low and you lose margin; bid too high and you don't run.",
       note:
         "<p>The <strong>day-ahead energy market</strong>: generators bid capacity and " +
-        "price. The TSO stacks them cheapest-first (the <strong>merit order</strong>). " +
-        "Demand must equal supply, so the TSO activates bids until demand is met. " +
-        "The <strong>clearing price</strong> is the highest bid activated (the marginal bid). " +
+        "price. The <term data-term=\"tso\">TSO</term> stacks them cheapest-first (the <strong><term data-term=\"merit_order\">merit order</term></strong>). " +
+        "<term data-term=\"demand\">Demand</term> must equal supply, so the <term data-term=\"tso\">TSO</term> activates bids until demand is met. " +
+        "The <strong><term data-term=\"clearing_price\">clearing price</term></strong> is the highest bid activated (the marginal bid). " +
         "All activated generators are paid this price.</p>" +
-        "<p>This uniform pricing means: if you bid €40/MWh and the marginal bid is €80/MWh, " +
+        "<p>This uniform pricing means: if you bid €40/<term data-term=\"mw\">MWh</term> and the marginal bid is €80/MWh, " +
         "you earn €80/MWh, not €40/MWh. Your revenue depends on the market, not your cost.</p>" +
         "<details><summary>Real market details</summary>" +
         "<p>Real European markets (EUPHEMIA) use <strong>marginal pricing</strong> (last activated bid " +
-        "wins). Bids have 10 MW granularity. Negative prices are possible if there's " +
-        "surplus. See the study note for <a href=\"/learn\">the full imbalance pricing → </a></p></details>",
+        "wins). Bids have 10 <term data-term=\"mw\">MW</term> granularity. Negative prices are possible if there's " +
+        "surplus. See the study note for <a href=\"/learn\">the full <term data-term=\"imbalance\">imbalance</term> pricing → </a></p></details>",
       status: "Bid strategically: too low and you win but earn little; too high and you don't run.",
       bidders: [
         { id: "you", name: "You (Your plant)", capacity: 300, costMin: 30, costMax: 80, isPlayer: true },
@@ -80,6 +82,7 @@
     reset: document.getElementById("reset-btn"),
     status: document.getElementById("status"),
     note: document.getElementById("game-note"),
+    scenarioText: document.getElementById("scenario-text"),
     levelHint: document.getElementById("level-hint"),
     levelButtons: Array.prototype.slice.call(document.querySelectorAll(".level-btn")),
     meritOrder: document.getElementById("merit-order"),
@@ -242,6 +245,7 @@
 
   function applyLevel(name) {
     level = LEVELS[name] || LEVELS[DEFAULT_LEVEL];
+    el.scenarioText.textContent = level.scenario;
     el.note.innerHTML = level.note;
     el.levelHint.textContent = level.hint;
     el.status.textContent = level.status;

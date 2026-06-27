@@ -175,58 +175,64 @@ window.glossary = {
   },
 };
 
-// Tooltip system: on page load, mark all <term> elements and attach hover handlers.
+// Tooltip system. Uses event delegation on the document so it works for
+// <term> elements that are injected dynamically (e.g. game notes, which are
+// re-rendered on every level switch) — not just those present at page load.
+// Appearance (dotted underline, help cursor) is handled in CSS via the
+// term[data-term] selector, so it never depends on JS having run yet.
 document.addEventListener("DOMContentLoaded", function () {
-  let currentLevel = "explore";
-  const operateBtn = document.querySelector('[data-level="operate"]');
-  if (operateBtn && operateBtn.getAttribute("aria-pressed") === "true") {
-    currentLevel = "operate";
+  // Read the level live at hover time so the right definition shows after a
+  // level toggle, without needing to re-bind anything.
+  function currentLevel() {
+    const operateBtn = document.querySelector('.level-btn[data-level="operate"]');
+    return operateBtn && operateBtn.getAttribute("aria-pressed") === "true"
+      ? "operate"
+      : "explore";
   }
 
-  const termElements = document.querySelectorAll("term[data-term]");
-  termElements.forEach(function (el) {
-    const termKey = el.getAttribute("data-term");
-    if (!glossary.terms[termKey]) return;
+  let activeTerm = null;
+  let activeTooltip = null;
 
-    el.classList.add("glossary-term");
-    el.style.cursor = "help";
+  function hideTooltip() {
+    if (activeTooltip) activeTooltip.remove();
+    activeTooltip = null;
+    activeTerm = null;
+  }
 
-    el.addEventListener("mouseenter", function (e) {
-      const def = glossary.getDefinition(termKey, currentLevel);
-      if (!def) return;
+  document.addEventListener("mouseover", function (e) {
+    const term =
+      e.target.closest && e.target.closest("term[data-term]");
+    if (!term) return;
+    if (term === activeTerm) return; // already showing for this term
 
-      // Create tooltip
-      const tooltip = document.createElement("div");
-      tooltip.className = "glossary-tooltip";
-      tooltip.innerHTML = "<strong>" + termKey + ":</strong> " + def;
-      document.body.appendChild(tooltip);
+    const key = term.getAttribute("data-term");
+    const def = glossary.terms[key] ? glossary.getDefinition(key, currentLevel()) : null;
+    if (!def) return;
 
-      // Position tooltip near cursor
-      const rect = el.getBoundingClientRect();
-      tooltip.style.left = rect.left + "px";
-      tooltip.style.top = rect.bottom + 10 + "px";
+    hideTooltip();
+    const tooltip = document.createElement("div");
+    tooltip.className = "glossary-tooltip";
+    tooltip.innerHTML = "<strong>" + key + ":</strong> " + def;
+    document.body.appendChild(tooltip);
 
-      el.tooltip = tooltip;
-    });
+    const rect = term.getBoundingClientRect();
+    tooltip.style.left = rect.left + "px";
+    tooltip.style.top = rect.bottom + 10 + "px";
 
-    el.addEventListener("mouseleave", function () {
-      if (el.tooltip) {
-        el.tooltip.remove();
-        el.tooltip = null;
-      }
-    });
+    activeTerm = term;
+    activeTooltip = tooltip;
   });
 
-  // When level toggle changes, refresh tooltips
-  const levelButtons = document.querySelectorAll(".level-btn");
-  levelButtons.forEach(function (btn) {
-    btn.addEventListener("click", function () {
-      // Remove all tooltips
-      const tooltips = document.querySelectorAll(".glossary-tooltip");
-      tooltips.forEach((t) => t.remove());
-      termElements.forEach((el) => {
-        el.tooltip = null;
-      });
-    });
+  document.addEventListener("mouseout", function (e) {
+    const term = e.target.closest && e.target.closest("term[data-term]");
+    if (!term || term !== activeTerm) return;
+    // Don't hide if the cursor merely moved onto a child of the same term.
+    if (e.relatedTarget && term.contains(e.relatedTarget)) return;
+    hideTooltip();
+  });
+
+  // Switching level dismisses any open tooltip (the next hover re-reads level).
+  document.querySelectorAll(".level-btn").forEach(function (btn) {
+    btn.addEventListener("click", hideTooltip);
   });
 });

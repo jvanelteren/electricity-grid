@@ -1,5 +1,5 @@
 [project]
-name = "electricity-course"
+name = "electricity-grid"
 version = "0.1.0"
 description = "A website that teaches the electricity system through simple interactive games."
 requires-python = ">=3.12"

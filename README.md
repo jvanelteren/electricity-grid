@@ -1,4 +1,4 @@
-# ⚡ Electricity Course
+# ⚡ Electricity Grid
 
 A website that teaches people how the electricity system works through simple,
 interactive games. Built with **FastAPI** (Python) serving an HTML/CSS/JS

@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Electricity Course{% endblock %}</title>
+  <title>{% block title %}Electricity Grid{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">⚡ Electricity Course</a>
+    <a class="brand" href="/">⚡ Electricity Grid</a>
     <nav class="site-nav">
       <a href="/">Games</a>
       <a href="/learn">Learn</a>
@@ -21,6 +21,7 @@
   <footer class="site-footer">
     <a href="/">All games</a>
   </footer>
+  <script src="{{ url_for('static', path='js/medals.js') }}"></script>
   <script src="{{ url_for('static', path='js/glossary.js') }}"></script>
   {% block scripts %}{% endblock %}
 </body>

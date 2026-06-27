@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ game.title }} — Electricity Course{% endblock %}
+{% block title %}{{ game.title }} — Electricity Grid{% endblock %}
 {% block content %}
 <section class="game-page">
   <h1>{{ game.title }}</h1>
@@ -10,31 +10,46 @@
     <button type="button" class="level-btn" id="level-explore" data-level="explore">Explore</button>
     <button type="button" class="level-btn" id="level-operate" data-level="operate">Operate</button>
     <span class="level-hint" id="level-hint"></span>
+    <div class="game-medal" data-medal-slug="{{ game.slug }}" aria-label="Your medal for this game"></div>
+  </div>
+
+  <div class="scenario-intro" id="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
+    <p id="scenario-text" style="margin: 0; color: #e7ecf3; font-size: 0.95rem;"></p>
   </div>
 
   <div class="game-note" id="game-note"></div>
 
+  <p class="mix-targets" id="mix-targets"></p>
+
   <div class="game-stage">
     <div class="mix-content">
-      <div class="sources-panel">
-        <h3 id="sources-title">Pick your sources</h3>
-        <div class="sources-grid" id="sources-grid"></div>
-      </div>
-
-      <div class="simulation-panel">
+      <div class="simulation-panel" style="order: -1;">
         <div class="demand-chart">
-          <h3>Demand over the day (24 h)</h3>
+          <h3>Supply vs demand over the day (24 h)</h3>
           <canvas id="demand-chart" width="400" height="200"></canvas>
+          <div class="chart-legend" id="chart-legend"></div>
         </div>
 
-        <div class="gauges">
+        <div class="game-buttons">
+          <button id="simulate-btn">Simulate day</button>
+          <button id="reset-btn">Reset</button>
+        </div>
+
+        <p class="status" id="status"></p>
+      </div>
+
+      <div class="sources-panel">
+        <h3 id="sources-title">Choose your sources</h3>
+        <div class="sources-grid" id="sources-grid"></div>
+
+        <div class="gauges" style="margin-top: 1.5rem;">
           <div class="gauge">
             <span class="gauge-label">Total cost</span>
             <span class="gauge-value" id="cost">€0</span>
           </div>
-          <div class="gauge">
+          <div class="gauge" id="carbon-gauge">
             <span class="gauge-label" id="carbon-label">Carbon</span>
-            <span class="gauge-value" id="carbon">0 kg CO₂</span>
+            <span class="gauge-value" id="carbon">0 t CO₂</span>
           </div>
           <div class="gauge">
             <span class="gauge-label">Blackouts</span>
@@ -45,17 +60,11 @@
             <span class="gauge-value" id="storage-soc">50%</span>
           </div>
         </div>
-
-        <div class="game-buttons">
-          <button id="simulate-btn">Simulate day</button>
-          <button id="reset-btn">Reset</button>
-        </div>
-
-        <p class="status" id="status"></p>
       </div>
     </div>
 
     <div class="results" id="results" hidden>
+      <div class="mix-stars" id="mix-stars" aria-label="Stars earned"></div>
       <h3 id="results-title"></h3>
       <p id="results-body"></p>
       <button id="results-ok">Try another mix</button>

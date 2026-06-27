@@ -46,7 +46,14 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
   border-radius: 12px;
   padding: 1.25rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
+/* Push the play button / coming-soon to the card's bottom so they align
+   across cards of differing text length. */
+.game-card .play-button,
+.game-card .coming-soon { margin-top: auto; }
+.game-card .play-button { align-self: flex-start; }
 .game-card.is-disabled { opacity: 0.55; }
 .medals-shelf {
   position: absolute;
@@ -73,6 +80,67 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
 .medal-gold {
   background: linear-gradient(135deg, #ffd700, #ffed4e);
   color: #b8860b;
+}
+/* Not-yet-earned slot: a dashed outline that reads as "medal goes here". */
+.medal-empty {
+  background: transparent;
+  border: 2px dashed var(--muted);
+  color: var(--muted);
+  box-shadow: none;
+  opacity: 0.65;
+  font-size: 1rem;
+}
+
+/* Per-game medal shown in the level-toggle row; pushed to the far right. */
+.game-medal {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Earn / upgrade reward: pop in, then glow a couple of times. */
+.medal--celebrate {
+  animation: medalPop 0.5s ease-out, medalGlow 1s ease-in-out 0.5s 2;
+}
+@keyframes medalPop {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes medalGlow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); }
+  50% { box-shadow: 0 0 18px 5px var(--accent); }
+}
+
+/* Celebration toast shown the moment a medal is earned. */
+.medal-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: var(--panel);
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  padding: 0.85rem 1.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+  z-index: 11000;
+  animation: medalToastIn 0.4s ease-out;
+}
+.medal-toast--out { animation: medalToastOut 0.4s ease-in forwards; }
+.medal-toast-icon { width: 36px; height: 36px; font-size: 1.3rem; flex: 0 0 auto; }
+.medal-toast-text { font-size: 0.95rem; line-height: 1.3; }
+.medal-toast-sub { color: var(--muted); font-size: 0.85rem; }
+@keyframes medalToastIn {
+  from { opacity: 0; transform: translate(-50%, 20px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes medalToastOut {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to { opacity: 0; transform: translate(-50%, 20px); }
 }
 .game-card h2 { margin: 0 0 0.5rem; }
 .game-card .summary { margin: 0 0 0.75rem; }
@@ -224,7 +292,7 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
   cursor: pointer;
 }
 
-.mix-content { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; }
+.mix-content { display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem; }
 .sources-panel h3 { margin-top: 0; color: var(--accent); }
 .sources-grid {
   display: flex;
@@ -240,10 +308,69 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
 .source-checkbox input[type="checkbox"] { margin-top: 0.2rem; }
 .source-checkbox span { color: var(--text); }
 
+/* Operate level: a capacity dial per source instead of a plain on/off box. */
+.source-slider { display: flex; flex-direction: column; gap: 0.35rem; }
+.source-slider-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+.source-slider-value {
+  color: var(--accent);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.source-slider input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+/* Upfront goal banner: tells the player what "good" looks like before they play. */
+.mix-targets {
+  max-width: 70ch;
+  margin: 0 0 1.25rem;
+  padding: 0.6rem 0.9rem;
+  background: rgba(255, 210, 77, 0.08);
+  border: 1px solid #5a4a1f;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
 .simulation-panel { display: flex; flex-direction: column; gap: 1.5rem; }
 .demand-chart { background: rgba(0, 0, 0, 0.3); border-radius: 6px; padding: 0.75rem; }
 .demand-chart h3 { margin: 0 0 0.5rem; font-size: 0.95rem; }
 .demand-chart canvas { display: block; width: 100%; }
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.chart-legend:empty { display: none; }
+.legend-item { display: inline-flex; align-items: center; gap: 0.35rem; }
+.legend-swatch {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  display: inline-block;
+}
+.legend-swatch.legend-line {
+  height: 0;
+  border-radius: 0;
+  border-top: 2px solid #ffffff;
+}
+
+/* Star rating shown in the results panel. */
+.mix-stars {
+  font-size: 1.8rem;
+  letter-spacing: 0.15rem;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
 
 .results {
   margin-top: 1rem;
@@ -255,6 +382,12 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
   max-width: 70ch;
 }
 .results h3 { margin: 0 0 0.5rem; color: #ff8a7a; }
+.results.is-success {
+  background: #0f1f17;
+  border-color: var(--safe);
+  border-left-color: var(--safe);
+}
+.results.is-success h3 { color: #7fe0a3; }
 .results p { margin: 0 0 0.75rem; }
 .results button {
   background: var(--accent);
@@ -334,12 +467,12 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
   .europe-content { grid-template-columns: 1fr; }
 }
 
-.glossary-term {
+.glossary-term, term[data-term] {
   border-bottom: 2px dotted var(--accent);
   cursor: help;
   position: relative;
 }
-.glossary-term:hover { background-color: rgba(255, 210, 77, 0.1); border-bottom-style: solid; }
+.glossary-term:hover, term[data-term]:hover { background-color: rgba(255, 210, 77, 0.1); border-bottom-style: solid; }
 
 .glossary-tooltip {
   position: fixed;

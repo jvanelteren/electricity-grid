@@ -11,12 +11,19 @@ A website that teaches how the electricity system works through simple, interact
 ```bash
 uv run main.py                    # dev server with reload at http://127.0.0.1:8000
 uv run scripts/smoke_test.py      # end-to-end smoke test (Playwright): routes respond, Learn renders, game runs with no JS errors
+uv run scripts/freeze.py          # pre-render the whole site to static HTML in dist/ for GitHub Pages
 ```
 
 `smoke_test.py` is the regression check — it boots the app on port 8021, drives it with a headless browser, and fails on any console error. Run it after touching routes, templates, or game JS.
 
 **`uv` gotcha (this machine):** `uv` on PATH is shadowed by a pyenv shim and errors with a pyenv message. Call the real binary directly:
 `C:\Users\Gebruiker\.pyenv\pyenv-win\versions\3.14.0rc3\Scripts\uv.exe` (e.g. `& "...\uv.exe" run main.py`).
+
+## Deployment
+
+The site is served **statically on GitHub Pages**, not as a running FastAPI app (Pages can't run Python). This is sound because the app has no real backend — every route renders a template once, and all game logic is client-side JS. [scripts/freeze.py](scripts/freeze.py) boots the app (like the smoke test), fetches each route, and writes directory-style HTML (`learn/index.html`, `games/<slug>/index.html`) plus a copy of `static/` to `dist/`. [.github/workflows/deploy.yml](.github/workflows/deploy.yml) runs it on push to `main` and publishes via the official Pages Actions flow.
+
+Served at a **project sub-path** (`https://<user>.github.io/electricity-grid/`), so freeze rewrites every root-absolute link (`url_for` output is absolute; nav links are literal `/`, `/learn`, `/games/...`) to sit under `BASE_PATH` (env var, default `/electricity-grid` — **keep it equal to the repo name**). Extensionless links like `/games/mix` resolve via the host's standard trailing-slash redirect to `…/mix/index.html`. For a domain root or local `dist/` preview, set `BASE_PATH=` (empty). One-time GitHub setup: repo named `electricity-grid`, Settings → Pages → Source = "GitHub Actions".
 
 ## Architecture
 
@@ -39,7 +46,7 @@ The **balance game is the reference implementation**: [static/js/balance.js](sta
 The games form one **ordered arc that zooms out in space and time** — seconds in one control room → a continent over a day. Each game reveals an assumption the previous one quietly made (G1 lets you slide a magic power knob, assumes power teleports, assumes you're alone; later games pay off each debt). Build order = play order, because each game's copy reuses intuition from the one before. The homepage is a learning path, not a flat grid.
 
 1. **Balance the Grid** *(built)* — supply must equal demand every instant; frequency is the signal. Explore: spinning wheel. Operate: FCR/aFRR, 50 Hz, imbalance €.
-2. **Build the Energy Mix** *(next; teased in registry)* — sources differ on cost, carbon, and controllability (variable vs dispatchable). **Storage & demand-flexibility live here** as special "buffer" sources. Pays off G1: half your fleet won't take orders, so balancing is hard.
+2. **Build the Energy Mix** *(built)* — sources differ on cost, carbon, and controllability (variable vs dispatchable). **Storage & demand-flexibility live here** as special "buffer" sources. Pays off G1: half your fleet won't take orders, so balancing is hard. Both levels use **real source names** (solar/wind/nuclear/gas — laypeople already know them); the Explore→Operate jump adds detail, not vocabulary. Feedback loop: a **stacked supply-vs-demand chart** where the dispatched (coloured) stack always meets the demand line exactly — never above it, honouring G1's *supply = demand every instant*. Unused output is drawn as a faint **"unused capacity"** band above the line (held back / curtailed, not supply), and only a genuine deficit shades **red** (blackout). Dispatch is **merit order** (cheapest plant first, up to demand), which sets up G4 (the market) and means only *delivered* energy is billed. A **3-star rating against visible cost/carbon targets** (thresholds calibrated against the sim with `scripts/`-style replicas — keep them in sync if you touch source costs/availability) gives a goal to optimise; in Operate the tension is carbon, since cheapest-first pulls in coal. Medals stay **silver** (blackout-free day) / **gold** (3 stars). Explore uses on/off checkboxes; Operate uses per-source **capacity sliders**.
 3. **Get It There (Transmission)** — the grid is a network of lines with capacity limits; bottlenecks force re-routing/redispatch. Operate: line MW limits, congestion, N-1, voltage levels. Pays off G1–2: power was teleporting.
 4. **The Market / Merit Order** *(its own game)* — a day-ahead auction stacks bids cheapest-first; the marginal plant sets one price for all. Connects to the imbalance € already in G1's Operate.
 5. **One Synchronous Europe** — one synchronous machine; a fault in France nudges Dutch frequency; neighbours share reserves and net imbalances (PICASSO/IGCC, ENTSO-E). Capstone integrating G1–4.

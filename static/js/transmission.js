@@ -20,15 +20,16 @@
       showLoss: false,
       showN1: false,
       unit: "",
+      scenario: "Power flows from plants to cities through transmission lines — like roads carrying trucks. Each road has a speed limit. If you push too much power down one road, it jams. Can you balance which plants run so all roads stay uncongested?",
       note:
         "<p>Think of the grid as roads from power plants to cities. Each road has a " +
         "speed limit (capacity). If you try to push too much power through a road, " +
-        "it jams — congestion.</p>" +
+        "it jams — <term data-term=\"congestion\">congestion</term>.</p>" +
         "<p>Pick which plants to turn on. If the roads jam, turn off remote plants " +
         "or find another route.</p>" +
         "<details><summary>Want the real names?</summary>" +
-        "<p>Roads are <strong>transmission lines</strong>, speed limits are <strong>MW limits</strong>, " +
-        "jams are <strong>congestion</strong>. Switch to <strong>Operate</strong> for the full picture.</p></details>",
+        "<p>Roads are <strong><term data-term=\"transmission_loss\">transmission lines</term></strong>, speed limits are <strong><term data-term=\"mw\">MW</term> limits</strong>, " +
+        "jams are <strong><term data-term=\"congestion\">congestion</term></strong>. Switch to <strong>Operate</strong> for the full picture.</p></details>",
       status:
         "Pick plants and check if power can flow to the cities without jamming the roads.",
       nodes: [
@@ -59,14 +60,15 @@
       showLoss: true,
       showN1: true,
       unit: " MW",
+      scenario: "You're a grid planner. Power must physically flow through a finite network. Every line has a thermal limit. Transmission loss grows with distance. And you must survive N-1: if the biggest line fails, can the rest still deliver power? Choose plants wisely.",
       note:
-        "<p>The transmission grid is a network of <strong>high-voltage lines</strong> " +
-        "each with an <strong>MW capacity limit</strong> set by thermal/stability constraints. " +
-        "<strong>Transmission loss</strong> grows with distance and current (I²R). " +
-        "<strong>N-1 contingency</strong>: if one big line fails, can the rest of the network " +
+        "<p>The <term data-term=\"transmission_loss\">transmission grid</term> is a network of <strong>high-voltage lines</strong> " +
+        "each with a <strong><term data-term=\"mw\">MW</term> capacity limit</strong> set by thermal/stability constraints. " +
+        "<strong><term data-term=\"transmission_loss\">Transmission loss</term></strong> grows with distance and current (I²R). " +
+        "<strong><term data-term=\"n_minus_one\">N-1 contingency</term></strong>: if one big line fails, can the rest of the network " +
         "still carry the load?</p>" +
-        "<p>Redispatch: if a line jams, you might shut down a remote plant and fire up one " +
-        "closer to load. <a href=\"/learn\">How real TSOs handle this →</a></p>",
+        "<p>Redispatch: if a line jams (<term data-term=\"congestion\">congestion</term>), you might shut down a remote plant and fire up one " +
+        "closer to load. <a href=\"/learn\">How real <term data-term=\"tso\">TSOs</term> handle this →</a></p>",
       status:
         "Build a reliable network: pick plants so power reaches all cities without congestion, " +
         "even if the biggest line fails.",
@@ -112,6 +114,7 @@
     reset: document.getElementById("reset-btn"),
     status: document.getElementById("status"),
     note: document.getElementById("game-note"),
+    scenarioText: document.getElementById("scenario-text"),
     levelHint: document.getElementById("level-hint"),
     levelButtons: Array.prototype.slice.call(document.querySelectorAll(".level-btn")),
     results: document.getElementById("results"),
@@ -269,6 +272,7 @@
 
   function applyLevel(name) {
     level = LEVELS[name] || LEVELS[DEFAULT_LEVEL];
+    el.scenarioText.textContent = level.scenario;
     el.note.innerHTML = level.note;
     el.levelHint.textContent = level.hint;
     el.status.textContent = level.status;

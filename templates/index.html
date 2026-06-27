@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Electricity Course — Games{% endblock %}
+{% block title %}Electricity Grid — Games{% endblock %}
 {% block content %}
 <section class="intro">
   <h1>Understand the electricity system through games</h1>
@@ -12,7 +12,7 @@
 <section class="game-grid">
   {% for game in games %}
   <article class="game-card {{ 'is-disabled' if not game.available }}" data-game-slug="{{ game.slug }}">
-    <div class="medals-shelf" id="medals-{{ game.slug }}"></div>
+    <div class="medals-shelf" data-medal-slug="{{ game.slug }}"></div>
     <h2>{{ game.title }}</h2>
     <p class="summary">{{ game.summary }}</p>
     <p class="concept"><strong>Concept:</strong> {{ game.concept }}</p>
@@ -24,21 +24,4 @@
   </article>
   {% endfor %}
 </section>
-
-<script src="{{ url_for('static', path='js/medals.js') }}"></script>
-<script>
-  // Load and display earned medals on the homepage
-  (function() {
-    const medals = JSON.parse(localStorage.getItem('medals') || '{}');
-    Object.keys(medals).forEach(slug => {
-      const shelf = document.getElementById('medals-' + slug);
-      if (shelf && medals[slug]) {
-        const medal = document.createElement('div');
-        medal.className = 'medal medal-' + medals[slug];
-        medal.title = medals[slug].charAt(0).toUpperCase() + medals[slug].slice(1) + ' medal earned';
-        shelf.appendChild(medal);
-      }
-    });
-  })();
-</script>
 {% endblock %}

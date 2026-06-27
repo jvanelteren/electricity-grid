@@ -19,19 +19,20 @@
     explore: {
       name: "Explore",
       hint: "One shared heartbeat. Neighbours can help when you're in trouble.",
+      scenario: "Continental Europe is one electrical machine — every country shares the same frequency. When demand spikes in your country, the frequency dips everywhere. But neighbors can send power to help. Can you balance the spike? How much cheaper is it with their help?",
       note:
-        "<p>The continental grid is <strong>one synchronous area</strong>: every country's " +
-        "frequency is locked together by shared inertia. A power plant trips in France, " +
-        "and the frequency dips everywhere.</p>" +
+        "<p>The continental grid is <strong>one <term data-term=\"synchronous_area\">synchronous area</term></strong>: every country's " +
+        "<term data-term=\"frequency\">frequency</term> is locked together by shared inertia. A power plant trips in France, " +
+        "and the <term data-term=\"frequency\">frequency</term> dips everywhere.</p>" +
         "<p>The upside: when <strong>one country is short</strong> of power, " +
-        "<strong>neighbours can send it via interconnectors</strong>, sharing the cost of " +
-        "balancing. Without sharing, you'd have to use expensive emergency reserves alone.</p>" +
+        "<strong>neighbours can send it via <term data-term=\"interconnector\">interconnectors</term></strong>, sharing the cost of " +
+        "balancing. Without sharing, you'd have to use expensive emergency <term data-term=\"reserve\">reserves</term> alone.</p>" +
         "<p>Trigger a disturbance (a big factory suddenly starts up in your country). Check the " +
         "cost with sharing ON vs. OFF.</p>" +
         "<details><summary>Want the real names?</summary>" +
-        "<p>The shared frequency is the <strong>synchronous area</strong>. Neighbours sending power " +
-        "is <strong>PICASSO</strong> (European aFRR platform) or <strong>IGCC</strong> (proportional " +
-        "imbalance netting). <a href=\"/learn\">How it works →</a></p></details>",
+        "<p>The shared <term data-term=\"frequency\">frequency</term> is the <strong><term data-term=\"synchronous_area\">synchronous area</term></strong>. Neighbours sending power " +
+        "is <strong><term data-term=\"picasso\">PICASSO</term></strong> (European aFRR platform) or <strong><term data-term=\"igcc\">IGCC</term></strong> (proportional " +
+        "<term data-term=\"imbalance\">imbalance</term> netting). <a href=\"/learn\">How it works →</a></p></details>",
       countries: [
         { id: "nl", name: "Netherlands", x: 150, y: 120, reserves: 100, demand: 300 },
         { id: "de", name: "Germany", x: 200, y: 100, reserves: 150, demand: 400 },
@@ -44,17 +45,18 @@
     operate: {
       name: "Operate",
       hint: "Real TSO scenario. Quantify the incentive to cooperate.",
+      scenario: "You're the TSO for the Netherlands. A 2 GW offshore wind cable fails (sudden loss). Your FCR and aFRR are stretched. Neighbouring TSOs (Germany, France) can activate their reserves and send power via PICASSO/IGCC platforms, netting the imbalances first to reduce activation costs. Will you ask for help? Compare the cost with sharing ON vs. OFF.",
       note:
-        "<p>You're the TSO (Transmission System Operator) for the Netherlands. " +
+        "<p>You're the <term data-term=\"tso\">TSO</term> (Transmission System Operator) for the Netherlands. " +
         "A <strong>2 GW offshore wind cable fails</strong> (sudden loss, equivalent to " +
-        "demand spike). Your FCR and aFRR are ~500 MW. The imbalance must be balanced " +
+        "<term data-term=\"demand\">demand</term> spike). Your <term data-term=\"fcr\">FCR</term> and <term data-term=\"afrr\">aFRR</term> are ~500 <term data-term=\"mw\">MW</term>. The <term data-term=\"imbalance\">imbalance</term> must be balanced " +
         "within 15 minutes.</p>" +
-        "<p><strong>Option 1 (no sharing):</strong> activate all your own mFRR reserves at " +
+        "<p><strong>Option 1 (no sharing):</strong> activate all your own <term data-term=\"mfrr\">mFRR</term> <term data-term=\"reserve\">reserves</term> at " +
         "expensive prices (~€100/MWh).</p>" +
-        "<p><strong>Option 2 (PICASSO):</strong> post your imbalance on the platform; " +
-        "neighbouring TSOs can bid to help; you pay the marginal price (usually cheaper).</p>" +
+        "<p><strong>Option 2 (<term data-term=\"picasso\">PICASSO</term>):</strong> post your <term data-term=\"imbalance\">imbalance</term> on the platform; " +
+        "neighbouring <term data-term=\"tso\">TSOs</term> can bid to help; you pay the <term data-term=\"clearing_price\">marginal price</term> (usually cheaper).</p>" +
         "<p>The math: cooperation saves money because you're not forced to buy at your " +
-        "highest reserve price — the market finds the cheapest available power across Europe.</p>",
+        "highest <term data-term=\"reserve\">reserve</term> price — the market finds the cheapest available power across Europe.</p>",
       countries: [
         { id: "nl", name: "Netherlands (You)", x: 150, y: 120, reserves: 500, demand: 1500 },
         { id: "de", name: "Germany", x: 200, y: 100, reserves: 800, demand: 2000 },
@@ -73,6 +75,7 @@
     map: document.getElementById("europe-map"),
     scenarioTitle: document.getElementById("scenario-title"),
     scenarioDesc: document.getElementById("scenario-desc"),
+    scenarioText: document.getElementById("scenario-text"),
     allowSharing: document.getElementById("allow-sharing"),
     frequency: document.getElementById("frequency"),
     balancingCost: document.getElementById("balancing-cost"),
@@ -186,6 +189,7 @@
 
   function applyLevel(name) {
     level = LEVELS[name] || LEVELS[DEFAULT_LEVEL];
+    el.scenarioText.textContent = level.scenario;
     el.note.innerHTML = level.note;
     el.levelHint.textContent = level.hint;
     el.levelButtons.forEach(function (btn) {

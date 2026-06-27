@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}{{ game.title }} — Electricity Course{% endblock %}
+{% block title %}{{ game.title }} — Electricity Grid{% endblock %}
 {% block content %}
 <section class="game-page">
   <h1>{{ game.title }}</h1>
@@ -10,6 +10,11 @@
     <button type="button" class="level-btn" id="level-explore" data-level="explore">Explore</button>
     <button type="button" class="level-btn" id="level-operate" data-level="operate">Operate</button>
     <span class="level-hint" id="level-hint"></span>
+    <div class="game-medal" data-medal-slug="{{ game.slug }}" aria-label="Your medal for this game"></div>
+  </div>
+
+  <div class="scenario-intro" id="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
+    <p id="scenario-text" style="margin: 0; color: #e7ecf3; font-size: 0.95rem;"></p>
   </div>
 
   <div class="game-note" id="game-note"></div>
