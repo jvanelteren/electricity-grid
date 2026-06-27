@@ -35,6 +35,27 @@ GAMES: list[Game] = [
         title="Build the Energy Mix",
         summary="Choose power sources to meet demand cheaply, cleanly, and reliably.",
         concept="Trade-offs between cost, emissions, and dispatchability of power sources.",
+        available=True,
+    ),
+    Game(
+        slug="transmission",
+        title="Get It There (Transmission)",
+        summary="Power flows over physical lines with capacity limits.",
+        concept="The grid is a network; bottlenecks force you to re-route power or change which plants run.",
+        available=False,
+    ),
+    Game(
+        slug="market",
+        title="The Market / Merit Order",
+        summary="A day-ahead auction decides which plants run, and the marginal price sets the cost.",
+        concept="Cheapest bids run first; the last plant needed sets one price for everyone.",
+        available=False,
+    ),
+    Game(
+        slug="europe",
+        title="One Synchronous Europe",
+        summary="One grid: a fault in France nudges the frequency you feel in the Netherlands.",
+        concept="The continental synchronous area is one shared machine; neighbours share reserves and net imbalances.",
         available=False,
     ),
 ]
