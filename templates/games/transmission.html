@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}{{ game.title }} — Electricity Course{% endblock %}
+{% block content %}
+<section class="game-page">
+  <h1>{{ game.title }}</h1>
+  <p class="concept">{{ game.concept }}</p>
+
+  <div class="level-toggle" role="group" aria-label="Difficulty level">
+    <span class="level-toggle-label">Level</span>
+    <button type="button" class="level-btn" id="level-explore" data-level="explore">Explore</button>
+    <button type="button" class="level-btn" id="level-operate" data-level="operate">Operate</button>
+    <span class="level-hint" id="level-hint"></span>
+  </div>
+
+  <div class="game-note" id="game-note"></div>
+
+  <div class="game-stage">
+    <div class="transmission-content">
+      <div class="network-panel">
+        <h3>The grid network</h3>
+        <canvas id="network-canvas" width="350" height="300"></canvas>
+        <p class="network-hint" id="network-hint">Click on plants to turn them on/off</p>
+      </div>
+
+      <div class="control-panel">
+        <div class="plants-section">
+          <h3>Power plants</h3>
+          <div class="plants-list" id="plants-list"></div>
+        </div>
+
+        <div class="gauges">
+          <div class="gauge">
+            <span class="gauge-label">Total demand</span>
+            <span class="gauge-value" id="total-demand">0 MW</span>
+          </div>
+          <div class="gauge">
+            <span class="gauge-label">Total generation</span>
+            <span class="gauge-value" id="total-generation">0 MW</span>
+          </div>
+          <div class="gauge">
+            <span class="gauge-label">Congestion</span>
+            <span class="gauge-value" id="congestion">✅ None</span>
+          </div>
+          <div class="gauge" id="loss-gauge" hidden>
+            <span class="gauge-label">Transmission loss</span>
+            <span class="gauge-value" id="loss">0%</span>
+          </div>
+        </div>
+
+        <div class="game-buttons">
+          <button id="solve-btn">Check if it works</button>
+          <button id="reset-btn">Reset</button>
+        </div>
+
+        <p class="status" id="status"></p>
+      </div>
+    </div>
+
+    <div class="results" id="results" hidden>
+      <h3 id="results-title"></h3>
+      <p id="results-body"></p>
+      <button id="results-ok">Try again</button>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', path='js/transmission.js') }}"></script>
+{% endblock %}
