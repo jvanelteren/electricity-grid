@@ -45,8 +45,35 @@ main { max-width: 960px; margin: 0 auto; padding: 2rem; }
   border: 1px solid #233247;
   border-radius: 12px;
   padding: 1.25rem;
+  position: relative;
 }
 .game-card.is-disabled { opacity: 0.55; }
+.medals-shelf {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+.medal {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+.medal-silver {
+  background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+  color: #666;
+}
+.medal-gold {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: #b8860b;
+}
 .game-card h2 { margin: 0 0 0.5rem; }
 .game-card .summary { margin: 0 0 0.75rem; }
 .game-card .concept { color: var(--muted); font-size: 0.9rem; }

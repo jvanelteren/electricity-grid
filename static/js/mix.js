@@ -312,6 +312,18 @@
       " t CO₂.";
     el.resultsBody.textContent = summary;
     el.results.hidden = false;
+
+    // Award medal if no blackouts
+    if (state.blackouts === 0) {
+      // Gold if cost is low (Operate level) or if in Operate mode
+      const isOperate = level.name === "Operate";
+      const lowCost = state.cost < 50000;
+      if (isOperate && lowCost) {
+        medalSystem.save("mix", "gold");
+      } else {
+        medalSystem.save("mix", "silver");
+      }
+    }
   }
 
   function applyLevel(name) {

@@ -164,6 +164,9 @@
         " (that's " +
         (level.sharingDiscount * 100).toFixed(0) +
         "% cheaper). One synchronous area means cooperation is cheaper for everyone.";
+
+      // Award medal: silver for showing it works without sharing, gold with sharing (Operate preferred)
+      medalSystem.save("europe", level.name === "Operate" ? "gold" : "silver");
     } else {
       el.resultsTitle.textContent = "⚠ You're alone — expensive fix";
       el.resultsBody.textContent =
@@ -175,6 +178,9 @@
         Math.round(costWithSharing) +
         ". " +
         "That's the power of PICASSO and IGCC.";
+
+      // Trigger with sharing OFF awards a medal (player sees the contrast)
+      medalSystem.save("europe", "silver");
     }
   }
 

@@ -219,6 +219,14 @@
         (clearingPrice > playerBid.bid
           ? "You made a profit!"
           : "You bid too high and didn't quite break even.");
+
+      // Award medal: silver for activation, gold for good profit
+      const profit = yourRevenue - yourActivation.volume * playerBid.bid;
+      if (profit > 1000) {
+        medalSystem.save("market", "gold");
+      } else {
+        medalSystem.save("market", "silver");
+      }
     } else {
       el.resultsTitle.textContent = "❌ You didn't run";
       el.resultsBody.textContent =

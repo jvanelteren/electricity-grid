@@ -258,6 +258,13 @@
     el.resultsBody.textContent =
       "Generation meets demand, no congestion." +
       (loss ? " Transmission loss: " + loss + "%." : "");
+
+    // Award medal: silver for healthy network, gold for Operate level
+    if (level.name === "Operate") {
+      medalSystem.save("transmission", "gold");
+    } else {
+      medalSystem.save("transmission", "silver");
+    }
   }
 
   function applyLevel(name) {

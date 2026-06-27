@@ -292,6 +292,15 @@
     reset();
   }
 
+  function checkMedal() {
+    // Award silver at score 50+, gold at score 150+
+    if (state.score >= 150) {
+      medalSystem.save("balance", "gold");
+    } else if (state.score >= 50) {
+      medalSystem.save("balance", "silver");
+    }
+  }
+
   el.start.addEventListener("click", start);
   el.reset.addEventListener("click", reset);
   el.explainerRetry.addEventListener("click", function () {
@@ -299,6 +308,11 @@
     start();
   });
   el.generation.addEventListener("input", render);
+
+  // Check for medal periodically while running
+  const medalCheckInterval = setInterval(function () {
+    if (state.running) checkMedal();
+  }, 2000);
   el.levelButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
       if (btn.dataset.level === levelName()) return;
