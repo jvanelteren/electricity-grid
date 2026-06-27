@@ -44,17 +44,19 @@
       labels: { frequency: "Grid speed", demand: "Being used", supply: "You're making" },
       controlLabel: "Your power — slide it to match what people are using",
       note:
-        "<p>You run the grid. Think of it as one giant <strong>spinning wheel</strong> that " +
-        "everyone draws power from. Make exactly as much as people are using and it spins " +
-        "steadily. Make too little and it slows down; too much and it speeds up — let it drift " +
-        "too far and the lights go out.</p>" +
-        "<p>Little wobbles are smoothed out for you automatically. Your job: slide your power to " +
-        "keep up with demand and hold the wheel steady.</p>" +
-        "<details><summary>Want the real names?</summary>" +
-        "<p>The “spinning wheel” speed is the grid <strong>frequency</strong> (50&nbsp;Hz in Europe). " +
-        "The automatic smoothing is <strong>FCR</strong> (primary reserve); the power you slide is " +
-        "<strong>aFRR</strong> (regulating power). Switch to <strong>Operate</strong> to play with the " +
-        "real terms and numbers. <a href=\"/learn\">How this works in the real grid →</a></p></details>",
+        “<p>You run the grid. Think of it as one giant <strong>spinning wheel</strong> that “ +
+        “everyone draws power from. Make exactly as much as people are using and it spins “ +
+        “steadily. Make too little and it slows down; too much and it speeds up — let it drift “ +
+        “too far and the lights go out.</p>” +
+        “<p>Little wobbles are smoothed out for you automatically. Your job: slide your power to “ +
+        “keep up with <term data-term=\”demand\”>demand</term> and hold the wheel steady.</p>” +
+        “<details><summary>Want the real names?</summary>” +
+        “<p>The “spinning wheel” speed is the grid <term data-term=\”frequency\”>frequency</term> “ +
+        “(50&nbsp;<term data-term=\”hz\”>Hz</term> in Europe). “ +
+        “The automatic smoothing is <term data-term=\”fcr\”><strong>FCR</strong></term> (primary reserve); “ +
+        “the power you slide is <term data-term=\”afrr\”><strong>aFRR</strong></term> (regulating power). “ +
+        “Switch to <strong>Operate</strong> to play with the real terms and numbers. “ +
+        “<a href=\”/learn\”>How this works in the real grid →</a></p></details>”,
       status: "Press Start. Keep your power matched to what people are using and hold the wheel steady.",
       balanced: "✅ Steady — the wheel is holding. Keep matching demand.",
       drift: function (low) {
@@ -94,11 +96,11 @@
       labels: { frequency: "Frequency", demand: "Demand", supply: "Supply" },
       controlLabel: "Your regulating power (aFRR) — match it to demand",
       note:
-        "<p>You are the control room. <strong>FCR</strong> (primary reserve) reacts automatically " +
-        "in seconds to <em>contain</em> a frequency dip — but it leaves a small offset from " +
-        "50&nbsp;Hz. You provide <strong>aFRR</strong> (regulating power): match your output to " +
-        "demand to pull frequency back to exactly 50&nbsp;Hz.</p>" +
-        "<p>Every MW you are out of balance accrues an <strong>imbalance settlement</strong> cost — " +
+        "<p>You are the control room. <term data-term=\"fcr\"><strong>FCR</strong></term> (primary reserve) reacts automatically " +
+        "in seconds to <em>contain</em> a <term data-term=\"frequency\">frequency</term> dip — but it leaves a small offset from " +
+        "50&nbsp;<term data-term=\"hz\">Hz</term>. You provide <term data-term=\"afrr\"><strong>aFRR</strong></term> (regulating power): match your output to " +
+        "<term data-term=\"demand\">demand</term> to pull frequency back to exactly 50&nbsp;Hz.</p>" +
+        "<p>Every <term data-term=\"mw\">MW</term> you are out of <term data-term=\"imbalance\">balance</term> accrues an <strong>imbalance settlement</strong> cost — " +
         "the balancing market charges for deviation. <a href=\"/learn\">How this works in the real grid →</a></p>",
       status: "Press Start. Demand will swing around — move your aFRR output to track it and hold frequency at 50 Hz.",
       balanced: "✅ Balanced — frequency at 50 Hz. Keep tracking demand.",

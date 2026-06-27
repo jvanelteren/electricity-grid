@@ -23,14 +23,15 @@
       note:
         "<p>An auction decides which plants run today. Everyone bids a price. The " +
         "auctioneer stacks all bids cheapest-first and activates enough to cover " +
-        "demand. The <strong>last bid activated</strong> (the <strong>marginal bid</strong>) " +
+        "<term data-term=\"demand\">demand</term>. The <strong>last bid activated</strong> " +
+        "(the <strong><term data-term=\"clearing_price\">marginal bid</term></strong>) " +
         "sets the price for <em>everyone</em>.</p>" +
         "<p>You're a bidder. Pick your bid price and hit \"Run the auction\". You'll see if " +
-        "you run, and what price you get (the marginal price, not your cost).</p>" +
+        "you run, and what price you get (the <term data-term=\"clearing_price\">clearing price</term>, not your cost).</p>" +
         "<details><summary>Want the real name?</summary>" +
         "<p>This is the <strong>day-ahead energy market</strong>. The rule (last activated " +
         "bid sets the price) is <strong>uniform/marginal pricing</strong>. It's the same " +
-        "principle as the imbalance prices in Game 1. " +
+        "principle as the <term data-term=\"imbalance\">imbalance</term> prices in Game 1. " +
         "<a href=\"/learn\">How the real market works →</a></p></details>",
       status: "Pick your bid price. Will you be in the merit order?",
       bidders: [
