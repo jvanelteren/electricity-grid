@@ -88,6 +88,30 @@ def main():
                 f"blackouts={page.inner_text('#blackouts')}"
             )
 
+            # Market game: 4-day campaign. Bid Day 1 and verify results appear
+            page.goto(f"{BASE}/games/market")
+            note = page.locator(".game-note").count()
+            slots = page.locator(".bidding-slot").count()
+            page.click("#submit-btn")
+            time.sleep(0.3)
+            title = page.inner_text("#day-results-title")
+            print(
+                f"/games/market explore  note={note}  bidding_slots={slots}  "
+                f"day_results_title_len={len(title)}"
+            )
+
+            # Transmission game: redispatch 4-round campaign. Run round 1.
+            page.goto(f"{BASE}/games/transmission")
+            note = page.locator(".game-note").count()
+            canvas = page.locator("#network-canvas").count()
+            page.click("#start-btn")
+            time.sleep(2)  # Let simulation run (30 ticks × 50ms)
+            title = page.inner_text("#results-title")
+            print(
+                f"/games/transmission explore  note={note}  canvas={canvas}  "
+                f"results_title_len={len(title)}"
+            )
+
             print("pageerrors:", errors or "none")
     finally:
         server.terminate()

@@ -30,19 +30,18 @@
       targets: { cost: 1000000, costGreat: 450000 },
       unit: "",
       sourceTitle: "Pick your sources",
-      scenario: "It's 6 AM on a Tuesday. Europe wakes up. The grid demand is rising. You need to turn on power sources to keep up. Some are free and work only at certain times. Some work all day but cost money. Can you cover demand without blackouts?",
+      scenario: "It's 6 AM on a Tuesday. Europe wakes up. The grid demand is rising. You need a mix of power sources to keep up. Here's the catch: some plants obey your orders. Solar says no after sunset. Wind says no when the air is still. Nuclear obeys — it works all day — but it costs a fortune. Can you pick a fleet that covers the whole day without blackouts?",
       note:
-        "<p>You need a mix of sources to cover the day's demand curve. Each source " +
-        "works at different times and costs different amounts.</p>" +
-        "<p><strong>Solar</strong> works best at noon, is free. " +
-        "<strong>Wind</strong> is unpredictable, free. " +
-        "<strong>Nuclear</strong> works all day but costs a lot. " +
-        "<strong>Battery</strong> stores extra power to use later.</p>" +
-        "<p>Goal: cover demand (no blackouts), minimize cost. Pick a mix and " +
-        "hit \"Simulate day\" to see how your mix does.</p>" +
+        "<p>You're building a power fleet. Some plants take orders. Some don't.</p>" +
+        "<p><strong>Solar:</strong> free and clean, but obeys the sun — vanishes at night. " +
+        "<strong>Wind:</strong> free and clean, but obeys the weather — vanishes in calm. " +
+        "<strong>Nuclear:</strong> obeys you (works all day), clean, but costs a lot. " +
+        "<strong>Battery:</strong> stores power so you can use it later.</p>" +
+        "<p>The challenge: the cheapest, cleanest sources are the disobedient ones. " +
+        "Goal: cover the whole day (no blackouts). Pick a mix and simulate to see how it does.</p>" +
         "<details><summary>Want more detail?</summary>" +
-        "<p>Switch to <strong>Operate</strong> for the full portfolio (adds gas and " +
-        "hydro), real costs, carbon, and capacity factors.</p></details>",
+        "<p>Switch to <strong>Operate</strong> for the full portfolio (adds coal, " +
+        "gas and hydro), realistic costs, carbon, and capacity factors.</p></details>",
       status: "Pick a mix of sources and click Simulate day.",
       sources: [
         {
@@ -91,17 +90,18 @@
       targets: { cost: 1000000, carbon: 1200 },
       unit: " MW",
       sourceTitle: "Choose your power plants",
-      scenario: "You're a grid operator. Tuesday, 6 AM. EU demand is rising. You have a day-ahead market and a portfolio of generators: solar, wind, nuclear, coal, gas, hydro, and battery. Some are cheap, some are clean, some are reliable. Build an energy mix that covers demand, stays affordable, and minimizes emissions.",
+      scenario: "You're a grid operator. Tuesday, 6 AM. EU demand is rising. Your generator portfolio: solar, wind, nuclear, coal, gas, hydro, battery. Some plants obey your orders — they run whenever you need them. Some don't — they only work when the weather cooperates. Build a mix that covers demand all day without blackouts. Keep it cheap and clean if you can.",
       note:
-        "<p>Build a realistic energy mix from available sources. Each has capacity, " +
-        "cost (€/MWh), carbon intensity (gCO₂/kWh), and availability " +
-        "(capacity factor or dispatch model).</p>" +
-        "<p><strong>Solar &amp; wind</strong> are variable (capacity factor). " +
-        "<strong>Nuclear</strong> is steady and clean but pricey. " +
-        "<strong>Coal &amp; gas</strong> are dispatchable but carbon-heavy. " +
-        "<strong>Hydro</strong> is flexible. <strong>Battery</strong> shifts power in time.</p>" +
-        "<p>Simulate a day. Goal: meet demand, minimize cost, minimize carbon, " +
-        "avoid blackouts. Real grids balance all four.</p>",
+        "<p><strong>Dispatchable plants obey you:</strong> nuclear (clean, pricey, always on), " +
+        "coal (cheap but by far the dirtiest), gas (flexible but pricey, still carbon-heavy), " +
+        "hydro (flexible, fairly clean).</p>" +
+        "<p><strong>Variable plants obey the weather:</strong> solar (free, clean, but only midday), " +
+        "wind (free, clean, but only when blowing).</p>" +
+        "<p><strong>The dilemma:</strong> the cheapest, cleanest sources are the disobedient ones. " +
+        "The obedient ones are either expensive (nuclear) or carbon-heavy (coal/gas). " +
+        "Battery can shift some power in time, but can't create it.</p>" +
+        "<p>Simulate a day. Goal: cover demand (no blackouts), minimize cost, minimize carbon. " +
+        "Real grids balance all three by accepting that some plants don't take orders.</p>",
       status: "Pick plants and simulate the day. How cheap and clean can you build it?",
       sources: [
         {
@@ -420,18 +420,18 @@
 
   function tipFor(stars) {
     if (state.blackouts > 0) {
-      return "Watch the red gaps on the chart — add firm, always-on capacity (nuclear/gas) or storage to cover those periods.";
+      return "The red gaps show when your fleet failed you — solar vanished at night, wind died down, and the plants that do take orders ran out of capacity. Add more obedient capacity or storage.";
     }
-    if (stars === 3) return "Perfect mix — you covered the day as cheaply and cleanly as it gets.";
+    if (stars === 3) return "Perfect mix — you covered the whole day, as cheaply and cleanly as the weather allowed.";
     if (!level.showCarbon) {
-      return "Lean harder on free solar & wind so you burn less of the costly steady source.";
+      return "You covered the day, but you're leaning on a steady source that costs money. The free sources (solar/wind) are too disobedient to cover alone — you need obedient backup.";
     }
     const carbonT = state.carbon / 1000;
     if (state.cost > level.targets.cost) {
-      return "Too pricey — shift demand toward your cheapest sources and trim the expensive ones.";
+      return "You're paying a lot for obedient capacity to cover the hours when solar and wind disobey. Trim plant capacity you rarely use, or let cheaper plants carry more of the load.";
     }
     if (carbonT > level.targets.carbon) {
-      return "Clean it up: replace coal/gas with renewables, nuclear, or storage.";
+      return "Too much coal and gas covering the hours when the free sources fail. Dial them down and lean on nuclear — clean and obedient, but pricier. That trade-off is the whole game.";
     }
     return "Tune the sliders to squeeze out the last star.";
   }
@@ -551,8 +551,8 @@
     el.resultsStars.textContent = starStr(stars);
     el.resultsTitle.textContent =
       state.blackouts === 0
-        ? "✅ You covered the whole day!"
-        : "⚠ " + state.blackouts + " blackout periods — you came up short.";
+        ? "✅ You covered the whole day — no blackouts!"
+        : "⚠ " + state.blackouts + " blackout periods — the weather-bound sources didn't deliver, and nothing covered for them.";
     el.results.classList.toggle("is-success", state.blackouts === 0);
     el.resultsBody.textContent =
       "Cost: €" + fmt(state.cost) +
@@ -561,8 +561,8 @@
     el.results.hidden = false;
     el.status.textContent =
       state.blackouts === 0
-        ? "Covered the day — " + starStr(stars) + ". Tweak the mix to chase more stars."
-        : "Blackouts — see the red gaps on the chart, then adjust.";
+        ? "Day covered — " + starStr(stars) + ". Adjust your mix to chase more stars."
+        : "Blackouts — see the red gaps (when your disobedient sources failed). Add obedient backup.";
 
     // Medal: any blackout-free day earns silver; a 3-star day earns gold.
     if (stars >= 3) medalSystem.save("mix", "gold");

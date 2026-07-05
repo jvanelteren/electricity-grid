@@ -1,287 +1,419 @@
-// "The Market / Merit Order" — an auction determines which plants run.
+// "The Bidder" — 4-day campaign learning market price mechanics.
 //
-// This game reveals how prices form in the real grid: not by cost-plus markup,
-// but by an auction where the cheapest bids run first, and the *last* bid
-// activated (the marginal bid) sets the price for everyone. This is uniform/
-// marginal pricing — all activated bids earn the same price. Players see that
-// your revenue depends not on your cost, but on the clearing price set by
-// the most expensive plant the TSO had to turn on.
+// Each day teaches a price phenomenon through scripted scenarios:
+// Day 1: Calm — learn the basic loop. Bid at cost, see clearing price.
+// Day 2: Peak — scarcity spikes price; greed gets punished (bid too high, miss peak).
+// Day 3: Storm — wind floods the stack near zero; your plant doesn't run (€5, maybe negative).
+//        The lesson: sometimes not running is the right outcome.
+// Day 4: Cold snap + outage — you become the marginal plant; your bid sets the national price.
+//        Capstone: individual bid, systemic impact. (Operate: G1 hook—imbalance € appears.)
 //
-// Explore: simple auction with 3 bidders. Operate: 5 bidders, realistic prices,
-// the mechanic connects to G1's imbalance €.
+// Explore: 3 bid slots per day (morning/afternoon/evening), plain language, real plant names.
+// Operate: 24 hourly bids €/MWh, real terms (day-ahead auction, clearing price, merit order),
+//          supply curve chart, G1 integration (imbalance settlement on Day 4).
 
 (function () {
   "use strict";
 
-  const DEMAND = 1000;
-
-  const LEVELS = {
-    explore: {
-      name: "Explore",
-      hint: "Cheapest bid wins, the marginal bid sets the price for all.",
-      unit: "",
-      scenario: "An auction decides which plants run. All bidders submit a price for their power. The auctioneer activates the cheapest bids first until demand is covered. The last bid activated (the marginal one) sets the price everyone gets paid. Can you bid low enough to run, and high enough to profit?",
-      note:
-        "<p>An auction decides which plants run today. Everyone bids a price. The " +
-        "auctioneer stacks all bids cheapest-first and activates enough to cover " +
-        "<term data-term=\"demand\">demand</term>. The <strong>last bid activated</strong> " +
-        "(the <strong><term data-term=\"clearing_price\">marginal bid</term></strong>) " +
-        "sets the price for <em>everyone</em>.</p>" +
-        "<p>You're a bidder. Pick your bid price and hit \"Run the auction\". You'll see if " +
-        "you run, and what price you get (the <term data-term=\"clearing_price\">clearing price</term>, not your cost).</p>" +
-        "<details><summary>Want the real name?</summary>" +
-        "<p>This is the <strong>day-ahead energy market</strong>. The rule (last activated " +
-        "bid sets the price) is <strong>uniform/marginal pricing</strong>. It's the same " +
-        "principle as the <term data-term=\"imbalance\">imbalance</term> prices in Game 1. " +
-        "<a href=\"/learn\">How the real market works →</a></p></details>",
-      status: "Pick your bid price. Will you be in the merit order?",
-      bidders: [
-        { id: "you", name: "You", capacity: 200, costMin: 20, costMax: 60, isPlayer: true },
-        { id: "comp1", name: "Competitor A", capacity: 300, cost: 30 },
-        { id: "comp2", name: "Competitor B", capacity: 500, cost: 50 },
-      ],
-    },
-    operate: {
-      name: "Operate",
-      hint: "Real sources, realistic prices, complex merit order. The actual market.",
-      unit: " MW",
-      scenario: "Day-ahead energy market. You bid a price for your generation capacity. The <term data-term=\"tso\">TSO</term> stacks all bids cheapest-first (the <term data-term=\"merit_order\">merit order</term>) and activates enough to cover demand. The <term data-term=\"clearing_price\">clearing price</term> is the highest activated bid — you earn that price, not your bid. Bid too low and you lose margin; bid too high and you don't run.",
-      note:
-        "<p>The <strong>day-ahead energy market</strong>: generators bid capacity and " +
-        "price. The <term data-term=\"tso\">TSO</term> stacks them cheapest-first (the <strong><term data-term=\"merit_order\">merit order</term></strong>). " +
-        "<term data-term=\"demand\">Demand</term> must equal supply, so the <term data-term=\"tso\">TSO</term> activates bids until demand is met. " +
-        "The <strong><term data-term=\"clearing_price\">clearing price</term></strong> is the highest bid activated (the marginal bid). " +
-        "All activated generators are paid this price.</p>" +
-        "<p>This uniform pricing means: if you bid €40/<term data-term=\"mw\">MWh</term> and the marginal bid is €80/MWh, " +
-        "you earn €80/MWh, not €40/MWh. Your revenue depends on the market, not your cost.</p>" +
-        "<details><summary>Real market details</summary>" +
-        "<p>Real European markets (EUPHEMIA) use <strong>marginal pricing</strong> (last activated bid " +
-        "wins). Bids have 10 <term data-term=\"mw\">MW</term> granularity. Negative prices are possible if there's " +
-        "surplus. See the study note for <a href=\"/learn\">the full <term data-term=\"imbalance\">imbalance</term> pricing → </a></p></details>",
-      status: "Bid strategically: too low and you win but earn little; too high and you don't run.",
-      bidders: [
-        { id: "you", name: "You (Your plant)", capacity: 300, costMin: 30, costMax: 80, isPlayer: true },
-        { id: "solar", name: "Solar", capacity: 400, cost: 20 },
-        { id: "wind", name: "Wind", capacity: 350, cost: 25 },
-        { id: "coal", name: "Coal", capacity: 450, cost: 50 },
-        { id: "gas", name: "Gas", capacity: 200, cost: 70 },
-      ],
-    },
+  // Scenario data for each of the 4 days.
+  const DAYS = {
+    explore: [
+      {
+        day: 1,
+        title: "Day 1: Calm market",
+        scenario:
+          "A normal day. Demand is steady. Competitors bid at their usual cost. You bid your gas plant's cost (€40). What happens when the market clears?",
+        periods: ["Morning", "Afternoon", "Evening"],
+        demand: [800, 1000, 900],
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 300, cost: 15 },
+          { id: "wind", name: "Wind", capacity: 200, cost: 20 },
+          { id: "coal", name: "Coal", capacity: 400, cost: 35 },
+        ],
+        plantCost: 40,
+        lesson:
+          "✅ The market filled up with the cheap plants first and only called on you when demand outgrew them. And when you were the last plant needed, your bid became the price — you broke even. Bidding your true cost never loses you money.",
+      },
+      {
+        day: 2,
+        title: "Day 2: Evening peak",
+        scenario:
+          "A cold evening is coming: demand will outgrow everything the cheap plants can make, and the market will need every plant it can find — including yours. Someone's bid is going to set the price for the whole country. Whose?",
+        periods: ["Morning", "Afternoon", "Evening (Peak)"],
+        demand: [700, 900, 1400],
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 300, cost: 15 },
+          { id: "wind", name: "Wind", capacity: 150, cost: 20 },
+          { id: "coal", name: "Coal", capacity: 400, cost: 35 },
+        ],
+        plantCost: 40,
+        lesson:
+          "🎯 In the evening peak the market needed every plant on the table, so the most expensive bid set the price — and everyone got paid it, cheap wind included. That's scarcity: the fewer plants left over, the more the last one needed can name its price.",
+      },
+      {
+        day: 3,
+        title: "Day 3: Storm (wind floods the market)",
+        scenario:
+          "A storm brings high wind. Wind plants flood the market with near-zero bids, and demand is only moderate. The cheap end of the stack covers almost everything. Do you run your €40 plant, or sit this one out?",
+        periods: ["Morning", "Afternoon", "Evening"],
+        demand: [750, 850, 900],
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 100, cost: 15 },
+          { id: "wind", name: "Wind", capacity: 600, cost: 5 }, // Storm: lots of wind, bids at €5
+          { id: "coal", name: "Coal", capacity: 400, cost: 35 },
+        ],
+        plantCost: 40,
+        lesson:
+          "💡 The storm's cheap wind covered most of the day, and the price never reached your €40 cost. Your plant sat idle — and that was the *right* outcome: running below cost means paying to work. Knowing when *not* to run is a skill.",
+      },
+      {
+        day: 4,
+        title: "Day 4: Cold snap + plant outage (You set the price)",
+        scenario:
+          "Extreme cold. Heating demand spikes to 2000 MW. A major coal plant is suddenly offline. Now the market needs your plant. Your bid will literally set the clearing price the whole country pays.",
+        periods: ["Morning", "Afternoon", "Evening (Critical)"],
+        demand: [1100, 1300, 2000],
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 200, cost: 15 },
+          { id: "wind", name: "Wind", capacity: 250, cost: 20 },
+          { id: "coal_offline", name: "Coal (offline)", capacity: 0, cost: 999 }, // Outage
+        ],
+        plantCost: 40,
+        lesson:
+          "⚡ With the big coal plant offline, the market couldn't cover the peak without you. You were the marginal plant: whatever you bid became the price the entire country paid — for every plant, not just yours. One plant's bid, everyone's price.",
+      },
+    ],
+    operate: [
+      {
+        day: 1,
+        title: "Day 1: Baseline forecast",
+        scenario:
+          "Day-ahead auction: normal 24-hour forecast. Demand curve smooth. Competitors bid at cost. Learn the loop: bid, clear, settle.",
+        hours: 24,
+        demand: null, // Will use realistic curve
+        forecastAccuracy: 1.0, // Perfect forecast
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 400, cost: 10 },
+          { id: "wind", name: "Wind", capacity: 350, cost: 15 },
+          { id: "coal", name: "Coal", capacity: 450, cost: 40 },
+          { id: "nuclear", name: "Nuclear", capacity: 300, cost: 25 },
+        ],
+        plantCost: 50,
+        lesson:
+          "Bids stack cheapest-first — the merit order. The last bid needed each hour sets the clearing price, and everyone who runs is paid that price, not their own bid. On a calm day the price never climbs to your €50, so you rarely run — normal life at the expensive end of the stack.",
+      },
+      {
+        day: 2,
+        title: "Day 2: Peak pricing",
+        scenario:
+          "The day-ahead forecast shows a strong evening peak. Watch the clearing price hour by hour: as demand climbs, the auction reaches deeper into the merit order and the price steps up with it. Where does your €50 plant start to matter?",
+        hours: 24,
+        demand: null,
+        forecastAccuracy: 1.0,
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 400, cost: 10 },
+          { id: "wind", name: "Wind", capacity: 300, cost: 15 },
+          { id: "coal", name: "Coal", capacity: 450, cost: 40 },
+          { id: "nuclear", name: "Nuclear", capacity: 300, cost: 25 },
+          { id: "gas_comp", name: "Competitor Gas", capacity: 250, cost: 55 },
+        ],
+        plantCost: 50,
+        lesson:
+          "Compare the quiet night with the evening peak: higher demand reaches deeper into the merit order, and the clearing price climbs from the cheap bids to the expensive ones. Whoever is last in line — the marginal plant — sets the price for everyone that hour.",
+      },
+      {
+        day: 3,
+        title: "Day 3: Renewable flood (negative prices possible)",
+        scenario:
+          "Forecast: high wind, low demand. Wind bids near zero and floods the cheap end of the stack, so the clearing price collapses. What does the expensive end of the merit order do on a day like this?",
+        hours: 24,
+        demand: null,
+        forecastAccuracy: 1.0,
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 300, cost: 10 },
+          { id: "wind", name: "Wind", capacity: 700, cost: 2 }, // Massive wind, near-zero cost
+          { id: "coal", name: "Coal", capacity: 450, cost: 40 },
+          { id: "nuclear", name: "Nuclear", capacity: 300, cost: 25 },
+        ],
+        plantCost: 50,
+        lesson:
+          "Wind bid almost nothing and covered nearly everything — the merit order ran wind, then solar, then nuclear, and the price stayed far below your €50 cost. You stayed out: running would have lost €48 on every MWh. In the real market prices even dip below zero on days like this — producers pay to keep running.",
+      },
+      {
+        day: 4,
+        title: "Day 4: Cold snap — reality beats the forecast",
+        scenario:
+          "The forecast said a normal day. Reality: a cold snap sends demand 40% above forecast, and the market suddenly needs every MW it can get — including yours. The day-ahead plan is broken. What does your bid do to the price now?",
+        hours: 24,
+        demand: null,
+        forecastAccuracy: 0.6, // Reality deviates: cold snap
+        competitors: [
+          { id: "solar", name: "Solar", capacity: 400, cost: 10 },
+          { id: "wind", name: "Wind", capacity: 350, cost: 15 },
+          { id: "coal", name: "Coal", capacity: 450, cost: 40 },
+          { id: "nuclear", name: "Nuclear", capacity: 300, cost: 25 },
+        ],
+        plantCost: 50,
+        lesson:
+          "Demand blew past the forecast, the whole stack ran, and you were the marginal plant — your bid set the national price. In the real grid, the gap between the day-ahead plan and reality doesn't vanish: it becomes imbalance, settled at prices like the ones you fought in Balance the Grid.",
+      },
+    ],
   };
 
-  const STORAGE_KEY = "market-level";
+  // Generate realistic 24-hour demand curve
+  function generateDemandCurve(day, peakFactor = 1.0) {
+    const curve = [];
+    for (let h = 0; h < 24; h++) {
+      // Base 800 MW, peak evening (18-20), low night (1-6)
+      const base = 800 * peakFactor;
+      let demand = base;
+      if ([18, 19, 20].includes(h)) demand = base + 400;
+      else if ([1, 2, 3, 4, 5, 6].includes(h)) demand = base - 200;
+      else if ([12, 13].includes(h)) demand = base + 100;
+      curve.push(Math.max(300, demand));
+    }
+    return curve;
+  }
+
+  const STORAGE_KEY = "market-day";
   const DEFAULT_LEVEL = "explore";
 
-  const el = {
-    biddersList: document.getElementById("bidders-list"),
-    demandValue: document.getElementById("demand-value"),
-    clearingPrice: document.getElementById("clearing-price"),
-    yourRevenue: document.getElementById("your-revenue"),
-    yourPosition: document.getElementById("your-position"),
-    clear: document.getElementById("clear-btn"),
-    reset: document.getElementById("reset-btn"),
-    status: document.getElementById("status"),
-    note: document.getElementById("game-note"),
-    scenarioText: document.getElementById("scenario-text"),
-    levelHint: document.getElementById("level-hint"),
-    levelButtons: Array.prototype.slice.call(document.querySelectorAll(".level-btn")),
-    meritOrder: document.getElementById("merit-order"),
-    orderList: document.getElementById("order-list"),
-    results: document.getElementById("results"),
-    resultsTitle: document.getElementById("results-title"),
-    resultsBody: document.getElementById("results-body"),
-    resultsOk: document.getElementById("results-ok"),
+  let level = DEFAULT_LEVEL;
+  let currentDay = 1;
+  let dayData = null;
+  let state = {
+    bids: {},
+    results: {},
+    cumulativeProfit: 0,
+    gameOver: false,
   };
 
-  let level = LEVELS[DEFAULT_LEVEL];
-  let bids = [];
-  let playerBid = null;
+  const el = {
+    levelButtons: Array.prototype.slice.call(document.querySelectorAll(".level-btn")),
+    levelHint: document.getElementById("level-hint"),
+    scenarioText: document.getElementById("scenario-text"),
+    note: document.getElementById("game-note"),
+    dayTitle: document.getElementById("day-title"),
+    dayPanel: document.getElementById("day-panel"),
+    biddingSlots: document.getElementById("bidding-slots"),
+    submitBtn: document.getElementById("submit-btn"),
+    resetBtn: document.getElementById("reset-btn"),
+    dayResults: document.getElementById("day-results"),
+    dayResultsTitle: document.getElementById("day-results-title"),
+    dayResultsBody: document.getElementById("day-results-body"),
+    dayResultsLesson: document.getElementById("day-results-lesson"),
+    nextDayBtn: document.getElementById("next-day-btn"),
+    campaignSummary: document.getElementById("campaign-summary"),
+    campaignTitle: document.getElementById("campaign-title"),
+    campaignBody: document.getElementById("campaign-body"),
+    campaignPlayAgain: document.getElementById("campaign-play-again"),
+    supplyChart: document.getElementById("supply-chart"),
+  };
 
-  function renderBidders() {
-    el.biddersList.innerHTML = "";
-    level.bidders.forEach(function (bidder) {
+  function renderBiddingSlots() {
+    el.biddingSlots.innerHTML = "";
+    const isOperate = level === "operate";
+    const periods = isOperate ? Array.from({ length: 24 }, (_, i) => `Hour ${i < 10 ? "0" + i : i}`) : dayData.periods;
+
+    periods.forEach((period, idx) => {
       const container = document.createElement("div");
-      container.className = "bidder-control";
+      container.className = "bidding-slot";
 
-      const name = document.createElement("strong");
-      name.textContent = bidder.name + " (" + bidder.capacity + level.unit + ")";
-      container.appendChild(name);
+      const label = document.createElement("label");
+      label.textContent = period;
 
-      if (bidder.isPlayer) {
-        const sliderContainer = document.createElement("div");
-        sliderContainer.className = "bidder-slider";
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = dayData.plantCost - 20;
+      slider.max = dayData.plantCost + 40;
+      slider.step = 1;
+      slider.value = dayData.plantCost;
+      slider.dataset.slot = idx;
 
-        const label = document.createElement("label");
-        label.textContent = "Your bid: ";
-        const input = document.createElement("input");
-        input.type = "range";
-        input.min = bidder.costMin;
-        input.max = bidder.costMax;
-        input.step = 5;
-        input.value = (bidder.costMin + bidder.costMax) / 2;
-        const value = document.createElement("span");
-        value.className = "bidder-value";
-        value.textContent = "€" + input.value + "/MWh";
-        input.addEventListener("input", function () {
-          value.textContent = "€" + input.value + "/MWh";
-          playerBid = { ...bidder, bid: parseFloat(input.value) };
-        });
-        label.appendChild(input);
-        label.appendChild(value);
-        sliderContainer.appendChild(label);
-        container.appendChild(sliderContainer);
-        playerBid = { ...bidder, bid: parseFloat(input.value) };
-      } else {
-        const bidValue = document.createElement("div");
-        bidValue.className = "bidder-fixed";
-        bidValue.textContent = "€" + bidder.cost + "/MWh";
-        container.appendChild(bidValue);
-      }
+      const value = document.createElement("span");
+      value.className = "bid-value";
+      value.textContent = "€" + slider.value + (isOperate ? "/MWh" : "");
 
-      el.biddersList.appendChild(container);
+      slider.addEventListener("input", function () {
+        value.textContent = "€" + slider.value + (isOperate ? "/MWh" : "");
+        state.bids[idx] = parseFloat(slider.value);
+      });
+
+      state.bids[idx] = dayData.plantCost;
+
+      label.appendChild(slider);
+      label.appendChild(value);
+      container.appendChild(label);
+      el.biddingSlots.appendChild(container);
     });
   }
 
-  function runAuction() {
-    // Gather all bids
-    const allBids = level.bidders
-      .filter((b) => !b.isPlayer)
-      .map((b) => ({ ...b, bid: b.cost }))
-      .concat([playerBid]);
+  function runDay() {
+    const isOperate = level === "operate";
+    const demand = dayData.demand || generateDemandCurve(currentDay, isOperate && currentDay === 4 ? 1.4 : 1.0);
+    const periods = isOperate ? 24 : dayData.periods.length;
 
-    // Sort cheapest-first
-    const sorted = allBids.sort((a, b) => a.bid - b.bid);
+    let totalProfit = 0;
+    const hourResults = [];
 
-    // Activate until demand is met
-    let accum = 0;
-    const activated = [];
-    sorted.forEach(function (bid) {
-      if (accum < DEMAND) {
-        const volume = Math.min(bid.capacity, DEMAND - accum);
-        activated.push({ ...bid, volume: volume });
-        accum += volume;
+    for (let p = 0; p < periods; p++) {
+      const bid = state.bids[p] || dayData.plantCost;
+      const demandForPeriod = isOperate ? demand[p] : (demand[p] || 1000);
+
+      // All competitors bid at cost
+      const allBids = dayData.competitors
+        .map(c => ({ ...c, bid: c.cost }))
+        .concat([{ id: "you", name: "Your plant", capacity: isOperate ? 300 : 200, bid: bid, cost: dayData.plantCost }]);
+
+      allBids.sort((a, b) => a.bid - b.bid);
+
+      // Activate until demand met
+      let accum = 0;
+      const activated = [];
+      allBids.forEach(function (b) {
+        if (accum < demandForPeriod) {
+          const vol = Math.min(b.capacity, demandForPeriod - accum);
+          activated.push({ ...b, volume: vol });
+          accum += vol;
+        }
+      });
+
+      const clearingPrice = activated.length > 0 ? activated[activated.length - 1].bid : 0;
+      const yourActivation = activated.find(a => a.id === "you");
+      let hourProfit = 0;
+
+      if (yourActivation) {
+        hourProfit = (clearingPrice - dayData.plantCost) * yourActivation.volume;
       }
-    });
 
-    // Clearing price = highest activated bid
-    const clearingPrice = activated.length > 0 ? activated[activated.length - 1].bid : 0;
+      totalProfit += hourProfit;
 
-    // Your revenue
-    const yourActivation = activated.find((a) => a.id === "you");
-    const yourRevenue = yourActivation ? yourActivation.volume * clearingPrice : 0;
+      hourResults.push({
+        period: isOperate ? `Hour ${p < 10 ? "0" : ""}${p}` : dayData.periods[p],
+        demand: demandForPeriod,
+        clearingPrice: clearingPrice,
+        bid: bid,
+        activated: !!yourActivation,
+        volume: yourActivation ? yourActivation.volume : 0,
+        profit: hourProfit,
+      });
+    }
 
-    // Render merit order
-    el.orderList.innerHTML = "";
-    sorted.forEach(function (bid, idx) {
-      const div = document.createElement("div");
-      div.className = "order-row";
-      const isActivated = activated.some((a) => a.id === bid.id);
-      const isYou = bid.id === "you";
-      if (isYou) div.classList.add("is-you");
-      if (isActivated) div.classList.add("is-activated");
+    state.cumulativeProfit += totalProfit;
+    state.results = hourResults;
+    state.gameOver = true;
 
-      div.innerHTML =
-        "<span class='order-rank'>#" +
-        (idx + 1) +
-        "</span>" +
-        "<span class='order-name'>" +
-        bid.name +
-        "</span>" +
-        "<span class='order-bid'>€" +
-        bid.bid +
-        "/MWh</span>" +
-        "<span class='order-cap'>" +
-        bid.capacity +
-        level.unit +
-        "</span>" +
-        (isActivated ? "<span class='order-vol'>" + activated.find((a) => a.id === bid.id).volume + level.unit + "</span>" : "");
+    showDayResults(totalProfit);
+  }
 
-      el.orderList.appendChild(div);
-    });
+  function showDayResults(dayProfit) {
+    el.dayPanel.hidden = true;
+    el.dayResults.hidden = false;
 
-    // Update gauges
-    el.clearingPrice.textContent = "€" + Math.round(clearingPrice) + "/MWh";
-    el.yourRevenue.textContent = "€" + Math.round(yourRevenue);
-    el.yourPosition.textContent = yourActivation
-      ? "✅ Activated (" + yourActivation.volume + level.unit + ")"
-      : "❌ Not activated";
+    const medal = dayProfit > 1000 ? "🥇" : dayProfit > 0 ? "🥈" : "—";
+    el.dayResultsTitle.textContent = `Day ${currentDay} complete: €${Math.round(dayProfit)} (${medal})`;
+    el.dayResultsBody.textContent = generateResultsBody();
+    el.dayResultsLesson.textContent = dayData.lesson;
 
-    // Results
-    el.meritOrder.hidden = false;
-    el.results.hidden = false;
-    if (yourActivation) {
-      el.resultsTitle.textContent =
-        "✅ You ran at the clearing price €" + Math.round(clearingPrice) + "/MWh";
-      el.resultsBody.textContent =
-        "Revenue: €" +
-        Math.round(yourRevenue) +
-        ". Your bid was €" +
-        playerBid.bid +
-        "/MWh, but the clearing price was €" +
-        Math.round(clearingPrice) +
-        "/MWh (set by the last bid activated). " +
-        (clearingPrice > playerBid.bid
-          ? "You made a profit!"
-          : "You bid too high and didn't quite break even.");
-
-      // Award medal: silver for activation, gold for good profit
-      const profit = yourRevenue - yourActivation.volume * playerBid.bid;
-      if (profit > 1000) {
-        medalSystem.save("market", "gold");
-      } else {
-        medalSystem.save("market", "silver");
-      }
+    if (currentDay < 4) {
+      el.nextDayBtn.hidden = false;
+      el.nextDayBtn.textContent = "Next day →";
     } else {
-      el.resultsTitle.textContent = "❌ You didn't run";
-      el.resultsBody.textContent =
-        "The clearing price was €" +
-        Math.round(clearingPrice) +
-        "/MWh, but your bid (€" +
-        playerBid.bid +
-        "/MWh) was too high. " +
-        "Bid lower next time if you want to run.";
+      el.nextDayBtn.hidden = true;
+    }
+
+    if (dayProfit >= 500) {
+      medalSystem.save("market", currentDay === 4 ? "gold" : "silver");
     }
   }
 
+  function generateResultsBody() {
+    const results = state.results;
+    const ranHours = results.filter(r => r.activated).length;
+    const profitableHours = results.filter(r => r.activated && r.profit > 0).length;
+    const lossHours = results.filter(r => r.activated && r.profit < 0).length;
+
+    let body = `You submitted ${results.length} bids. `;
+    body += `You ran in ${ranHours} period(s). `;
+    if (profitableHours > 0) body += `${profitableHours} profitable, `;
+    if (lossHours > 0) body += `${lossHours} at a loss.`;
+    return body;
+  }
+
+  function nextDay() {
+    currentDay += 1;
+    if (currentDay <= 4) {
+      const dayList = level === "operate" ? DAYS.operate : DAYS.explore;
+      dayData = dayList[currentDay - 1];
+      state = { bids: {}, results: {}, cumulativeProfit: state.cumulativeProfit, gameOver: false };
+      el.dayPanel.hidden = false;
+      el.dayResults.hidden = true;
+      el.dayTitle.textContent = dayData.title;
+      el.scenarioText.textContent = dayData.scenario;
+      renderBiddingSlots();
+    } else {
+      showCampaignSummary();
+    }
+  }
+
+  function showCampaignSummary() {
+    el.dayResults.hidden = true;
+    el.campaignSummary.hidden = false;
+    el.campaignTitle.textContent = `Campaign complete: €${Math.round(state.cumulativeProfit)} total`;
+    el.campaignBody.textContent =
+      "You've seen four faces of the same auction: a calm market, a scarcity peak, a renewable flood, and the day your own bid set the national price. The market isn't magic — it's individual bids, stacked cheapest-first, with one clearing price for all.";
+  }
+
   function applyLevel(name) {
-    level = LEVELS[name] || LEVELS[DEFAULT_LEVEL];
-    el.scenarioText.textContent = level.scenario;
-    el.note.innerHTML = level.note;
-    el.levelHint.textContent = level.hint;
-    el.status.textContent = level.status;
-    el.demandValue.textContent = DEMAND + level.unit;
+    level = name;
+    const hint = name === "operate" ? "Real terms: 24 hourly bids in €/MWh." : "Three bids a day, plain language. Get a feel for the auction.";
+    el.levelHint.textContent = hint;
+
+    const note = name === "operate"
+      ? "<p>You own a 300 MW gas plant with a running cost of €50/MWh. Each day you submit 24 hourly bids into the day-ahead auction; bids stack cheapest-first (the <term data-term=\"merit_order\">merit order</term>) and the last bid needed sets the <term data-term=\"clearing_price\">clearing price</term> everyone is paid.</p>" +
+        "<p><strong>Day 1:</strong> calm market — bid your cost, watch how the price forms.</p>" +
+        "<p><strong>Day 2:</strong> evening peak — scarcity pulls the price up the merit order.</p>" +
+        "<p><strong>Day 3:</strong> storm — cheap wind floods the stack; the right move may be not running at all.</p>" +
+        "<p><strong>Day 4:</strong> cold snap — demand beats the forecast and your bid sets the national price.</p>" +
+        "<details><summary>How real is this?</summary><p>Very: European power exchanges run exactly this kind of day-ahead auction every day, and the marginal bid sets one price for all. <a href=\"/learn\">How it works in the real grid →</a></p></details>"
+      : "<p>You own one gas power plant. It costs you €40 to make each unit of power, and you tell the market the price you want for it — that's your bid.</p>" +
+        "<p>The market buys from the cheapest plants first, until demand is covered. Here's the twist: <strong>everyone who runs gets paid the price of the last plant needed</strong> — not their own bid.</p>" +
+        "<p>Four days, each with its own weather and its own lesson. Bid low and you always run (but maybe at a loss); bid high and you might not run at all. Find the sweet spot.</p>";
+
+    el.note.innerHTML = note;
     el.levelButtons.forEach(function (btn) {
-      const active = btn.dataset.level === name;
-      btn.classList.toggle("is-active", active);
-      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      btn.classList.toggle("is-active", btn.dataset.level === name);
+      btn.setAttribute("aria-pressed", btn.dataset.level === name ? "true" : "false");
     });
-    el.meritOrder.hidden = true;
-    el.results.hidden = true;
-    renderBidders();
     try {
       localStorage.setItem(STORAGE_KEY, name);
     } catch (e) {
       /* ignore */
     }
+    reset();
   }
 
-  el.clear.addEventListener("click", runAuction);
-  el.reset.addEventListener("click", function () {
-    el.meritOrder.hidden = true;
-    el.results.hidden = true;
-    el.clearingPrice.textContent = "—";
-    el.yourRevenue.textContent = "€0";
-    el.yourPosition.textContent = "—";
-  });
-  el.resultsOk.addEventListener("click", function () {
-    el.results.hidden = true;
-    el.meritOrder.hidden = true;
-  });
+  function reset() {
+    currentDay = 1;
+    const dayList = level === "operate" ? DAYS.operate : DAYS.explore;
+    dayData = dayList[0];
+    state = { bids: {}, results: {}, cumulativeProfit: 0, gameOver: false };
+    el.dayPanel.hidden = false;
+    el.dayResults.hidden = true;
+    el.campaignSummary.hidden = true;
+    el.dayTitle.textContent = dayData.title;
+    el.scenarioText.textContent = dayData.scenario;
+    renderBiddingSlots();
+  }
+
+  el.submitBtn.addEventListener("click", runDay);
+  el.resetBtn.addEventListener("click", reset);
+  el.nextDayBtn.addEventListener("click", nextDay);
+  el.campaignPlayAgain.addEventListener("click", reset);
   el.levelButtons.forEach(function (btn) {
     btn.addEventListener("click", function () {
-      const name = btn.dataset.level;
-      if (level.name === LEVELS[name].name) return;
-      applyLevel(name);
+      if (btn.dataset.level === level) return;
+      applyLevel(btn.dataset.level);
     });
   });
 
@@ -291,5 +423,5 @@
   } catch (e) {
     /* ignore */
   }
-  applyLevel(LEVELS[saved] ? saved : DEFAULT_LEVEL);
+  applyLevel(saved);
 })();

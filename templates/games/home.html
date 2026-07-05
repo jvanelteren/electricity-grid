@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Flip the Switch — Electricity Grid{% endblock %}
+
+{% block content %}
+<div class="game-page">
+  <h1>Flip the Switch</h1>
+  <p class="concept">
+    Five games ago you ran the grid. Now you're just… home. Same power, different hour: catch the cheap, clean hours — and discover you were a power plant all along.
+  </p>
+
+  <div class="level-toggle">
+    <label class="level-toggle-label">Level:</label>
+    <button class="level-btn is-active" data-level="explore">Explore</button>
+    <button class="level-btn" data-level="operate">Operate</button>
+    <div class="game-medal">
+      <span>Medals:</span>
+      <div class="medals-shelf">
+        <div class="medal medal-empty" id="medal-silver">◆</div>
+        <div class="medal medal-empty" id="medal-gold">★</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-note">
+    <p><strong>Your goal:</strong> Shift your home's electricity use to the cheap and clean hours. The timeline shows the price for each hour — drag your loads to where power is plentiful.</p>
+  </div>
+
+  <div id="game-container">
+    <!-- Campaign header -->
+    <div class="campaign-header">
+      <h2 id="day-title">Day 1: Sunny Saturday</h2>
+      <p id="day-description"></p>
+    </div>
+
+    <!-- Main game UI -->
+    <div class="home-content">
+      <!-- Timeline panel -->
+      <div class="timeline-panel">
+        <h3>Your Day</h3>
+        <div class="price-chart" id="price-chart"></div>
+        <div class="timeline-container">
+          <div class="timeline-grid" id="timeline-grid">
+            <!-- Hours and draggable blocks go here -->
+          </div>
+        </div>
+        <div class="timeline-legend">
+          <div class="legend-item">
+            <span class="legend-swatch" style="background: #2e7d4f;"></span>
+            <span>Cheap</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-swatch" style="background: #ffd24d;"></span>
+            <span>Moderate</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-swatch" style="background: #d32f2f;"></span>
+            <span>Expensive</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Control panel -->
+      <div class="home-controls">
+        <div class="loads-panel">
+          <h3>Your Appliances</h3>
+          <div class="load-list" id="load-list">
+            <!-- Load items go here -->
+          </div>
+        </div>
+
+        <!-- Metrics -->
+        <div class="metrics-box">
+          <div class="metric">
+            <div class="gauge-label">Daily Bill</div>
+            <div class="gauge-value" id="bill-value">€0</div>
+          </div>
+          <div class="metric">
+            <div class="gauge-label">CO₂ Emissions</div>
+            <div class="gauge-value" id="co2-value">0 kg</div>
+          </div>
+        </div>
+
+        <!-- Goals -->
+        <div class="goals-box" id="goals-box"></div>
+
+        <!-- Campaign controls -->
+        <div class="campaign-controls">
+          <button class="game-button" id="next-day-btn" style="display:none;">Next Day</button>
+          <button class="game-button" id="reset-day-btn">Reset Day</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results/feedback -->
+    <div id="day-results" style="display:none;"></div>
+
+    <!-- Campaign end -->
+    <div id="campaign-summary" style="display:none;"></div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

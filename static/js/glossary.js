@@ -9,7 +9,7 @@ window.glossary = {
     frequency: {
       explore: "How fast the grid's generators are spinning. Like the heartbeat of the grid. Normal is 50 Hz (spins 50 times per second).",
       operate:
-        "The frequency of the AC power in the synchronous area, nominally 50 Hz in continental Europe. Deviations indicate imbalance: demand > supply slows it down; supply > demand speeds it up. TSOs must maintain ±0.1 Hz under normal operation.",
+        "The frequency of the AC power in the synchronous area, nominally 50 Hz in continental Europe. Deviations indicate imbalance: demand > supply slows it down; supply > demand speeds it up. Normal operation stays within about ±0.05 Hz; a deviation of ±0.2 Hz already counts as a serious disturbance.",
     },
     fcr: {
       explore:
@@ -25,7 +25,7 @@ window.glossary = {
     mfrr: {
       explore: "Emergency backup power that a human operator calls in when something big fails.",
       operate:
-        "Manual Frequency Restoration Reserve. Manually activated by a control-room operator for long-lasting deviations and incidents. No bids; only availability is contracted. TSO activates it directly. NL volumes ~850/580 MW (2026).",
+        "Manual Frequency Restoration Reserve. Activated by a control-room operator (rather than automatically) for long-lasting deviations and incidents, typically within 15 minutes. Capacity is contracted in advance; the TSO calls it up when needed. NL volumes ~850/580 MW (2026).",
     },
     demand: {
       explore: "How much power people and businesses are using right now.",
@@ -58,9 +58,9 @@ window.glossary = {
         "Balancing Service Provider. Provides reserve capacity/energy bids that the TSO activates. Must pre-qualify assets against each product's technical requirements (ramp rate, minimum/maximum volume, etc.). Can be a single plant or aggregated pool.",
     },
     merit_order: {
-      explore: "A ranked list of power plants, cheapest first. The TSO turns on plants down the list until demand is covered.",
+      explore: "A ranked list of power plants, cheapest first. The market works down the list until demand is covered.",
       operate:
-        "The ranking of all generation bids by price (lowest first for upward regulation, highest first for downward). The TSO activates bids sequentially until demand is met. The last activated bid sets the clearing price (uniform pricing).",
+        "The ranking of bids by price, cheapest first. The day-ahead market covers demand this way, and the TSO activates balancing bids the same way (lowest first for upward regulation, highest first for downward). The last activated bid sets the clearing price (uniform pricing).",
     },
     clearing_price: {
       explore: "The price set by the last plant that had to turn on. Everyone who ran gets paid that price, not their own bid.",
@@ -80,7 +80,7 @@ window.glossary = {
     synchronous_area: {
       explore: "All the grids electrically connected and sharing the same frequency. Continental Europe is one.",
       operate:
-        "A group of synchronous generators electrically interconnected and operating at the same frequency. Continental Europe (France to Poland) is one synchronous area at 50 Hz, coordinated by ENTSO-E. A fault anywhere nudges frequency everywhere.",
+        "A group of generators electrically interconnected and spinning in lockstep at the same frequency. Continental Europe — from Portugal to Turkey — is one synchronous area at 50 Hz, coordinated by ENTSO-E. A fault anywhere nudges the frequency everywhere.",
     },
     interconnector: {
       explore: "A transmission line that connects one country's grid to a neighbour's, allowing power to flow between them.",
@@ -90,12 +90,12 @@ window.glossary = {
     picasso: {
       explore: "A platform where countries swap balancing power via an auction. Cheaper than each country calling its own expensive reserves.",
       operate:
-        "Platform for the Intelligent Coordination of congestion and Ancillary Services across the Synchronous area of continental Europe. Exchanges automatic Frequency Restoration Reserve (aFRR) across borders taking prices into account (every 4 seconds, cross-border marginal price). Preferred over IGCC because it's more economical.",
+        "Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation. The European platform for exchanging aFRR across borders: TSOs forward their bids, and an optimization selects the cheapest available every few seconds at a cross-border marginal price. Works alongside IGCC: netting first cancels opposing imbalances for free; PICASSO then activates the cheapest reserves for what remains.",
     },
     igcc: {
-      explore: "Countries share imbalances proportionally before activating expensive reserves, saving money.",
+      explore: "When one country is short of power and a neighbour has too much, the two cancel out — before anyone starts up expensive reserves. Free balancing.",
       operate:
-        "International Grid Control Cooperation. Imbalances netted proportionally between TSOs before aFRR activation. A Dutch shortage can be cancelled by another area's surplus, so fewer (or no) local bids are activated. Limited by available cross-zonal capacity.",
+        "International Grid Control Cooperation: imbalance netting between TSOs before aFRR activation. A Dutch shortage can be cancelled against another area's surplus, so fewer (or no) reserve bids are activated. Limited by available cross-zonal capacity.",
     },
     capacity_factor: {
       explore: "How often a renewable source is actually making power (solar works noon-ish, wind is moody).",
@@ -120,7 +120,7 @@ window.glossary = {
     hz: {
       explore: "Hertz. The unit for frequency: how many times per second the AC current oscillates. Normal is 50 times per second.",
       operate:
-        "Hertz (Hz). SI unit of frequency. The AC power in continental Europe oscillates 50 times per second, hence nominal frequency = 50 Hz. Deviations of ±0.05 Hz are acceptable under normal operation; >0.8 Hz triggers load shedding.",
+        "Hertz (Hz). SI unit of frequency. The AC power in continental Europe oscillates 50 times per second, hence nominal frequency = 50 Hz. Deviations up to ±0.05 Hz are normal; automatic load shedding starts around 49.0 Hz (a full −1.0 Hz) to prevent collapse.",
     },
     mw: {
       explore: "A unit of power. One megawatt = one million watts. A typical city uses 100–1000 MW.",
@@ -130,12 +130,12 @@ window.glossary = {
     fifty_hz: {
       explore: "The target frequency for the European grid. When supply matches demand, frequency holds at 50 Hz.",
       operate:
-        "Nominal frequency of the continental European synchronous area (UK, Ireland use 50 Hz; US/Canada use 60 Hz). Set by ENTSO-E. Deviations indicate imbalance; the TSO activates reserves to restore it.",
+        "Nominal frequency of the continental European synchronous area. The UK and Ireland also run at 50 Hz but are separate synchronous areas (linked only by DC cables); the US runs at 60 Hz. Deviations indicate imbalance; TSOs activate reserves to restore 50 Hz.",
     },
     renewable: {
       explore: "Power from sources that won't run out: sun, wind, water, etc.",
       operate:
-        "Electricity generated from naturally replenishing sources (solar, wind, hydro, geothermal, biomass). In Europe, expanding rapidly (target ≥80% by 2030 under REPowerEU), but variability increases balancing costs and reserve requirements.",
+        "Electricity generated from naturally replenishing sources (solar, wind, hydro, geothermal, biomass). Expanding rapidly — the EU aims for renewables to supply the majority of its electricity by 2030 — but variability increases balancing costs and reserve requirements.",
     },
     reserve: {
       explore: "Extra power kept standing by to turn on when needed, in case demand suddenly spikes or a plant fails.",

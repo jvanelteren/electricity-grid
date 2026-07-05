@@ -13,55 +13,47 @@
     <div class="game-medal" data-medal-slug="{{ game.slug }}" aria-label="Your medal for this game"></div>
   </div>
 
+  <div class="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
+    <p id="scenario-text" style="margin: 0; color: #e7ecf3; font-size: 0.95rem;"></p>
+  </div>
+
   <div class="game-note" id="game-note"></div>
 
   <div class="game-stage">
-    <div class="market-content">
-      <div class="bidders-panel">
-        <h3>Bidders</h3>
-        <div class="bidders-list" id="bidders-list"></div>
+    <!-- Day panel: bidding phase -->
+    <div id="day-panel" class="day-panel">
+      <h3 id="day-title"></h3>
+      <div class="bidding-panel">
+        <label>Your bids for this day:</label>
+        <div class="bidding-slots" id="bidding-slots"></div>
       </div>
 
-      <div class="simulation-panel">
-        <div class="demand-box">
-          <h3>Today's demand</h3>
-          <div class="demand-value" id="demand-value">1000 MW</div>
-        </div>
-
-        <div class="gauges">
-          <div class="gauge">
-            <span class="gauge-label">Clearing price</span>
-            <span class="gauge-value" id="clearing-price">—</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Your revenue</span>
-            <span class="gauge-value" id="your-revenue">€0</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Your position</span>
-            <span class="gauge-value" id="your-position">—</span>
-          </div>
-        </div>
-
-        <div class="game-buttons">
-          <button id="clear-btn">Run the auction</button>
-          <button id="reset-btn">Reset</button>
-        </div>
-
-        <p class="status" id="status"></p>
+      <div class="game-buttons">
+        <button id="submit-btn">Submit bids</button>
+        <button id="reset-btn">Reset day</button>
       </div>
     </div>
 
-    <div class="merit-order" id="merit-order" hidden>
-      <h3>Merit order (bids stacked)</h3>
-      <div class="order-list" id="order-list"></div>
+    <!-- Day results panel -->
+    <div id="day-results" class="day-results" hidden>
+      <h3 id="day-results-title"></h3>
+      <p id="day-results-body"></p>
+      <div class="lesson" id="day-results-lesson"></div>
+      <button id="next-day-btn">Next day →</button>
     </div>
 
-    <div class="results" id="results" hidden>
-      <h3 id="results-title"></h3>
-      <p id="results-body"></p>
-      <button id="results-ok">Try another auction</button>
+    <!-- Campaign summary (after Day 4) -->
+    <div id="campaign-summary" class="campaign-summary" hidden>
+      <h3 id="campaign-title"></h3>
+      <p id="campaign-body"></p>
+      <button id="campaign-play-again">Play again</button>
     </div>
+  </div>
+
+  <!-- Supply curve chart (Operate only) -->
+  <div id="supply-chart" class="supply-chart" hidden>
+    <h3>Merit order (supply curve)</h3>
+    <canvas id="merit-canvas" width="600" height="200"></canvas>
   </div>
 </section>
 {% endblock %}

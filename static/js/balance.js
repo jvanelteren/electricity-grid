@@ -43,44 +43,43 @@
       unit: "",
       labels: { frequency: "Grid speed", demand: "Being used", supply: "You're making" },
       controlLabel: "Your power — slide it to match what people are using",
-      scenario: "You're standing at the control panel. People across Europe are flipping light switches, charging devices, running appliances. The grid is one spinning wheel — make exactly as much power as they're using and it stays steady. Make too little or too much and something breaks.",
+      scenario: "You're standing at the control panel. Across Europe, people are flipping light switches, charging devices, running appliances — all riding the same giant merry-go-round. Generators are the people pushing it; every switched-on appliance is a rider dragging their feet. Push exactly as hard as the riders drag and it turns at a steady, comfortable speed. Push too little and it grinds to a halt; push too hard and it spins so fast people fly off.",
       note:
-        "<p>You run the grid. Think of it as one giant <strong>spinning wheel</strong> that " +
-        "everyone draws power from. Make exactly as much as people are using and it spins " +
-        "steadily. Make too little and it slows down; too much and it speeds up — let it drift " +
-        "too far and the <term data-term=\"blackout\">lights go out</term>.</p>" +
-        "<p>Little wobbles are smoothed out for you automatically. Your job: slide your power to " +
-        "keep up with <term data-term=\"demand\">demand</term> and hold the wheel steady.</p>" +
+        "<p>You run the grid. Think of it as one giant <strong>merry-go-round</strong> everyone rides. " +
+        "Generators are the people pushing; appliances are riders dragging their feet. Push exactly as hard " +
+        "as they drag and it spins steadily. Push too little and it slows down; push too much and it speeds up " +
+        "— let it drift too far and the <term data-term=\"blackout\">lights go out</term>.</p>" +
+        "<p>The heavy platform has natural momentum — it doesn't change speed instantly when you push harder. " +
+        "Your job: slide your power to keep up with <term data-term=\"demand\">demand</term> and keep the carousel at a steady spin.</p>" +
         "<details><summary>Want the real names?</summary>" +
-        "<p>The &ldquo;spinning wheel&rdquo; speed is the grid <term data-term=\"frequency\">frequency</term> " +
+        "<p>The merry-go-round's spin speed is the grid <term data-term=\"frequency\">frequency</term> " +
         "(50&nbsp;<term data-term=\"hz\">Hz</term> in Europe). " +
-        "The automatic smoothing is <term data-term=\"fcr\"><strong>FCR</strong></term> (primary <term data-term=\"reserve\">reserve</term>); " +
-        "the power you slide is <term data-term=\"afrr\"><strong>aFRR</strong></term> (regulating power). " +
+        "The momentum that slows the dip is <term data-term=\"fcr\"><strong>FCR</strong></term> (primary <term data-term=\"reserve\">reserve</term>) — it's real inertia. " +
+        "The power you slide is <term data-term=\"afrr\"><strong>aFRR</strong></term> (regulating power). " +
         "Switch to <strong>Operate</strong> to play with the real terms and numbers. " +
         "<a href=\"/learn\">How this works in the real grid</a></p></details>",
-      status: "Press Start. Keep your power matched to what people are using and hold the wheel steady.",
-      balanced: "✅ Steady — the wheel is holding. Keep matching demand.",
+      status: "Press Start. Keep your power matched to what people are using and hold the carousel steady.",
+      balanced: "✅ Steady — the carousel is holding. Keep matching demand.",
       drift: function (low) {
         return low
-          ? "The wheel is slowing — people are using more than you're making. Slide your power up."
-          : "The wheel is speeding up — you're making more than people use. Slide your power down.";
+          ? "The carousel is slowing — riders are dragging harder than you're pushing. Push harder."
+          : "The carousel is speeding up — you're pushing harder than the riders are dragging. Push softer.";
       },
       explainer: function (low) {
         return low
           ? {
-              title: "The lights went out — the wheel slowed too far",
+              title: "The lights went out — the carousel slowed to a halt",
               body:
-                "People were using more power than you were making, so the spinning wheel slowed " +
-                "until it stalled. The automatic smoothing can soften a dip but can't fill a lasting " +
-                "gap — only you can, by sliding your power up to match. Real grids start switching " +
-                "off customers before it gets this far, to stop a total collapse.",
+                "Riders were dragging harder than you were pushing, so the merry-go-round slowed down and stalled. " +
+                "The platform's momentum can soften a dip but can't keep it spinning if you fall too far behind — only you can, " +
+                "by pushing harder to match. Real grids start switching off customers before it gets this far, to stop a total collapse.",
             }
           : {
-              title: "The lights went out — the wheel spun too fast",
+              title: "The lights went out — the carousel spun too fast",
               body:
-                "You were making more power than people were using, so the wheel sped up out of " +
-                "control. The automatic smoothing slows the rise but can't soak up the extra — you " +
-                "needed to slide your power down. Real grids switch off some generation to cope.",
+                "You were pushing harder than the riders were dragging, so the merry-go-round sped up out of control " +
+                "and people flew off. The platform's momentum slows the rise but can't absorb the extra energy — you " +
+                "needed to push softer. Real grids switch off some generation to cope.",
             };
       },
     },
@@ -96,7 +95,7 @@
       unit: " MW",
       labels: { frequency: "Frequency", demand: "Demand", supply: "Supply" },
       controlLabel: "Your regulating power (aFRR) — match it to demand",
-      scenario: "You're a TSO (Transmission System Operator) in the control room. Demand is swinging around 50 Hz. Your job: dispatch aFRR (regulating power) to track demand moment by moment. Every MW you're off balance costs money. Keep frequency at exactly 50 Hz.",
+      scenario: "You're a TSO (Transmission System Operator) in the control room. Demand swings minute by minute, and every mismatch pulls the frequency away from 50 Hz. Your job: dispatch aFRR (regulating power) to track demand moment by moment. Every MW you're off balance costs money. Keep frequency at exactly 50 Hz.",
       note:
         "<p>You are the control room. <term data-term=\"fcr\"><strong>FCR</strong></term> (primary reserve) reacts automatically " +
         "in seconds to <em>contain</em> a <term data-term=\"frequency\">frequency</term> dip — but it leaves a small offset from " +

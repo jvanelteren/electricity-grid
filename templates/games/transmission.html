@@ -13,58 +13,63 @@
     <div class="game-medal" data-medal-slug="{{ game.slug }}" aria-label="Your medal for this game"></div>
   </div>
 
-  <div class="scenario-intro" id="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
+  <div class="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
     <p id="scenario-text" style="margin: 0; color: #e7ecf3; font-size: 0.95rem;"></p>
   </div>
 
   <div class="game-note" id="game-note"></div>
 
   <div class="game-stage">
-    <div class="transmission-content">
-      <div class="network-panel">
-        <h3>The grid network</h3>
-        <canvas id="network-canvas" width="350" height="300"></canvas>
-        <p class="network-hint" id="network-hint">Click on plants to turn them on/off</p>
+    <h3 id="round-title"></h3>
+
+    <!-- Network map -->
+    <div class="network-container">
+      <canvas id="network-canvas" width="600" height="400" style="border: 1px solid #233247; border-radius: 6px;"></canvas>
+    </div>
+
+    <!-- Demand display -->
+    <div class="demand-panel">
+      <div class="gauge">
+        <span class="gauge-label">Demand North</span>
+        <span class="gauge-value" id="demand-north">0 MW</span>
       </div>
-
-      <div class="control-panel">
-        <div class="plants-section">
-          <h3>Power plants</h3>
-          <div class="plants-list" id="plants-list"></div>
-        </div>
-
-        <div class="gauges">
-          <div class="gauge">
-            <span class="gauge-label">Total demand</span>
-            <span class="gauge-value" id="total-demand">0 MW</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Total generation</span>
-            <span class="gauge-value" id="total-generation">0 MW</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Congestion</span>
-            <span class="gauge-value" id="congestion">✅ None</span>
-          </div>
-          <div class="gauge" id="loss-gauge" hidden>
-            <span class="gauge-label">Transmission loss</span>
-            <span class="gauge-value" id="loss">0%</span>
-          </div>
-        </div>
-
-        <div class="game-buttons">
-          <button id="solve-btn">Check if it works</button>
-          <button id="reset-btn">Reset</button>
-        </div>
-
-        <p class="status" id="status"></p>
+      <div class="gauge">
+        <span class="gauge-label">Demand South</span>
+        <span class="gauge-value" id="demand-south">0 MW</span>
+      </div>
+      <div class="gauge">
+        <span class="gauge-label">Redispatch cost</span>
+        <span class="gauge-value" id="redispatch-cost">€0/hr</span>
       </div>
     </div>
 
-    <div class="results" id="results" hidden>
+    <!-- Generation sliders -->
+    <div class="generation-panel">
+      <label for="wind-slider">Wind dispatch:</label>
+      <div class="slider-container">
+        <input type="range" id="wind-slider" min="0" max="400" step="10" value="200">
+        <span id="wind-value">200 MW</span>
+      </div>
+
+      <label for="coal-slider">Coal dispatch:</label>
+      <div class="slider-container">
+        <input type="range" id="coal-slider" min="0" max="500" step="10" value="200">
+        <span id="coal-value">200 MW</span>
+      </div>
+    </div>
+
+    <!-- Control buttons -->
+    <div class="game-buttons">
+      <button id="start-btn">Run round</button>
+      <button id="reset-btn">Reset</button>
+    </div>
+
+    <!-- Results panel -->
+    <div id="round-results" class="round-results" hidden>
       <h3 id="results-title"></h3>
       <p id="results-body"></p>
-      <button id="results-ok">Try again</button>
+      <div class="lesson" id="results-lesson"></div>
+      <button id="next-round-btn" hidden>Next round →</button>
     </div>
   </div>
 </section>

@@ -13,59 +13,65 @@
     <div class="game-medal" data-medal-slug="{{ game.slug }}" aria-label="Your medal for this game"></div>
   </div>
 
-  <div class="scenario-intro" id="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
+  <div class="scenario-intro" style="background: rgba(45, 125, 79, 0.1); border: 1px solid #2e7d4f; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; max-width: 70ch;">
     <p id="scenario-text" style="margin: 0; color: #e7ecf3; font-size: 0.95rem;"></p>
   </div>
 
   <div class="game-note" id="game-note"></div>
 
   <div class="game-stage">
-    <div class="europe-content">
-      <div class="map-panel">
-        <h3>The synchronous area</h3>
-        <canvas id="europe-map" width="400" height="300"></canvas>
+    <!-- Day panel: simulation -->
+    <div id="day-panel" class="day-panel">
+      <h3 id="day-title"></h3>
+
+      <!-- Frequency display -->
+      <div class="frequency-display">
+        <h4>Grid frequency</h4>
+        <canvas id="frequency-canvas" width="600" height="200" style="border: 1px solid #233247; border-radius: 6px;"></canvas>
+        <div class="frequency-gauges">
+          <div class="gauge">
+            <span class="gauge-label">Your region</span>
+            <span class="gauge-value" id="frequency-local">50.00 Hz</span>
+          </div>
+          <div class="gauge" id="frequency-continental-gauge" hidden>
+            <span class="gauge-label">Continental</span>
+            <span class="gauge-value" id="frequency-continental">50.00 Hz</span>
+          </div>
+        </div>
       </div>
 
-      <div class="control-panel">
-        <div class="scenario-box">
-          <h3 id="scenario-title">Scenario</h3>
-          <p id="scenario-desc"></p>
-          <div class="sharing-controls">
-            <label>
-              <input type="checkbox" id="allow-sharing" checked /> Allow cross-border
-              sharing
-            </label>
-          </div>
+      <!-- Cost tracking -->
+      <div class="cost-display">
+        <div class="gauge">
+          <span class="gauge-label">Today's cost</span>
+          <span class="gauge-value" id="cost-today">€0</span>
         </div>
-
-        <div class="gauges">
-          <div class="gauge">
-            <span class="gauge-label">Frequency</span>
-            <span class="gauge-value" id="frequency">50.00 Hz</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Balancing cost</span>
-            <span class="gauge-value" id="balancing-cost">€0</span>
-          </div>
-          <div class="gauge">
-            <span class="gauge-label">Countries stable</span>
-            <span class="gauge-value" id="stable-count">3/3</span>
-          </div>
+        <div class="gauge">
+          <span class="gauge-label">Campaign total</span>
+          <span class="gauge-value" id="cost-campaign">€0</span>
         </div>
+      </div>
 
-        <div class="game-buttons">
-          <button id="trigger-btn">Trigger disturbance</button>
-          <button id="reset-btn">Reset</button>
-        </div>
-
-        <p class="status" id="status"></p>
+      <!-- Control buttons -->
+      <div class="game-buttons">
+        <button id="start-btn">Start simulation</button>
+        <button id="reset-btn">Reset day</button>
       </div>
     </div>
 
-    <div class="results" id="results" hidden>
-      <h3 id="results-title"></h3>
-      <p id="results-body"></p>
-      <button id="results-ok">Try again</button>
+    <!-- Day results panel -->
+    <div id="day-results" class="day-results" hidden>
+      <h3 id="day-results-title"></h3>
+      <p id="day-results-body"></p>
+      <div class="lesson" id="day-results-lesson"></div>
+      <button id="next-day-btn" hidden>Next day →</button>
+    </div>
+
+    <!-- Campaign summary (after Day 4) -->
+    <div id="campaign-summary" class="campaign-summary" hidden>
+      <h3 id="campaign-title"></h3>
+      <div id="campaign-body"></div>
+      <button id="campaign-play-again">Play again</button>
     </div>
   </div>
 </section>
