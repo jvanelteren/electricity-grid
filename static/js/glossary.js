@@ -80,7 +80,7 @@ window.glossary = {
     synchronous_area: {
       explore: "All the grids electrically connected and sharing the same frequency. Continental Europe is one.",
       operate:
-        "A group of generators electrically interconnected and spinning in lockstep at the same frequency. Continental Europe — from Portugal to Turkey — is one synchronous area at 50 Hz, coordinated by ENTSO-E. A fault anywhere nudges the frequency everywhere.",
+        "A group of generators electrically interconnected and spinning in lockstep at the same frequency. Continental Europe, from Portugal to Turkey, is one synchronous area at 50 Hz, coordinated by ENTSO-E. A fault anywhere nudges the frequency everywhere.",
     },
     interconnector: {
       explore: "A transmission line that connects one country's grid to a neighbour's, allowing power to flow between them.",
@@ -93,7 +93,7 @@ window.glossary = {
         "Platform for the International Coordination of Automated Frequency Restoration and Stable System Operation. The European platform for exchanging aFRR across borders: TSOs forward their bids, and an optimization selects the cheapest available every few seconds at a cross-border marginal price. Works alongside IGCC: netting first cancels opposing imbalances for free; PICASSO then activates the cheapest reserves for what remains.",
     },
     igcc: {
-      explore: "When one country is short of power and a neighbour has too much, the two cancel out — before anyone starts up expensive reserves. Free balancing.",
+      explore: "When one country is short of power and a neighbour has too much, the two cancel out before anyone starts up expensive reserves. Free balancing.",
       operate:
         "International Grid Control Cooperation: imbalance netting between TSOs before aFRR activation. A Dutch shortage can be cancelled against another area's surplus, so fewer (or no) reserve bids are activated. Limited by available cross-zonal capacity.",
     },
@@ -135,7 +135,7 @@ window.glossary = {
     renewable: {
       explore: "Power from sources that won't run out: sun, wind, water, etc.",
       operate:
-        "Electricity generated from naturally replenishing sources (solar, wind, hydro, geothermal, biomass). Expanding rapidly — the EU aims for renewables to supply the majority of its electricity by 2030 — but variability increases balancing costs and reserve requirements.",
+        "Electricity generated from naturally replenishing sources (solar, wind, hydro, geothermal, biomass). Expanding rapidly (the EU aims for renewables to supply the majority of its electricity by 2030), but variability increases balancing costs and reserve requirements.",
     },
     reserve: {
       explore: "Extra power kept standing by to turn on when needed, in case demand suddenly spikes or a plant fails.",

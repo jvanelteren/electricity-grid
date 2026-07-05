@@ -32,13 +32,13 @@
         ],
         plantCost: 40,
         lesson:
-          "✅ The market filled up with the cheap plants first and only called on you when demand outgrew them. And when you were the last plant needed, your bid became the price — you broke even. Bidding your true cost never loses you money.",
+          "✅ The market filled up with the cheap plants first and only called on you when demand outgrew them. And when you were the last plant needed, your bid became the price, so you broke even. Bidding your true cost never loses you money.",
       },
       {
         day: 2,
         title: "Day 2: Evening peak",
         scenario:
-          "A cold evening is coming: demand will outgrow everything the cheap plants can make, and the market will need every plant it can find — including yours. Someone's bid is going to set the price for the whole country. Whose?",
+          "A cold evening is coming: demand will outgrow everything the cheap plants can make, and the market will need every plant it can find, including yours. Someone's bid is going to set the price for the whole country. Whose?",
         periods: ["Morning", "Afternoon", "Evening (Peak)"],
         demand: [700, 900, 1400],
         competitors: [
@@ -48,7 +48,7 @@
         ],
         plantCost: 40,
         lesson:
-          "🎯 In the evening peak the market needed every plant on the table, so the most expensive bid set the price — and everyone got paid it, cheap wind included. That's scarcity: the fewer plants left over, the more the last one needed can name its price.",
+          "In the evening peak the market needed every plant on the table, so the most expensive bid set the price, and everyone got paid it, cheap wind included. That's scarcity: the fewer plants left over, the more the last one needed can name its price.",
       },
       {
         day: 3,
@@ -64,7 +64,7 @@
         ],
         plantCost: 40,
         lesson:
-          "💡 The storm's cheap wind covered most of the day, and the price never reached your €40 cost. Your plant sat idle — and that was the *right* outcome: running below cost means paying to work. Knowing when *not* to run is a skill.",
+          "The storm's cheap wind covered most of the day, and the price never reached your €40 cost. Your plant sat idle, and that was the right outcome: running below cost means paying to work. Knowing when not to run is a skill.",
       },
       {
         day: 4,
@@ -80,7 +80,7 @@
         ],
         plantCost: 40,
         lesson:
-          "⚡ With the big coal plant offline, the market couldn't cover the peak without you. You were the marginal plant: whatever you bid became the price the entire country paid — for every plant, not just yours. One plant's bid, everyone's price.",
+          "With the big coal plant offline, the market couldn't cover the peak without you. You were the marginal plant: whatever you bid became the price the entire country paid, for every plant, not just yours. One plant's bid, everyone's price.",
       },
     ],
     operate: [
@@ -100,7 +100,7 @@
         ],
         plantCost: 50,
         lesson:
-          "Bids stack cheapest-first — the merit order. The last bid needed each hour sets the clearing price, and everyone who runs is paid that price, not their own bid. On a calm day the price never climbs to your €50, so you rarely run — normal life at the expensive end of the stack.",
+          "Bids stack cheapest-first: that's the merit order. The last bid needed each hour sets the clearing price, and everyone who runs is paid that price, not their own bid. On a calm day the price never climbs to your €50, so you rarely run. Normal life at the expensive end of the stack.",
       },
       {
         day: 2,
@@ -119,7 +119,7 @@
         ],
         plantCost: 50,
         lesson:
-          "Compare the quiet night with the evening peak: higher demand reaches deeper into the merit order, and the clearing price climbs from the cheap bids to the expensive ones. Whoever is last in line — the marginal plant — sets the price for everyone that hour.",
+          "Compare the quiet night with the evening peak: higher demand reaches deeper into the merit order, and the clearing price climbs from the cheap bids to the expensive ones. Whoever is last in line, the marginal plant, sets the price for everyone that hour.",
       },
       {
         day: 3,
@@ -137,13 +137,13 @@
         ],
         plantCost: 50,
         lesson:
-          "Wind bid almost nothing and covered nearly everything — the merit order ran wind, then solar, then nuclear, and the price stayed far below your €50 cost. You stayed out: running would have lost €48 on every MWh. In the real market prices even dip below zero on days like this — producers pay to keep running.",
+          "Wind bid almost nothing and covered nearly everything: the merit order ran wind, then solar, then nuclear, and the price stayed far below your €50 cost. You stayed out. Running would have lost €48 on every MWh. In the real market, prices even dip below zero on days like this, with producers paying to keep running.",
       },
       {
         day: 4,
         title: "Day 4: Cold snap — reality beats the forecast",
         scenario:
-          "The forecast said a normal day. Reality: a cold snap sends demand 40% above forecast, and the market suddenly needs every MW it can get — including yours. The day-ahead plan is broken. What does your bid do to the price now?",
+          "The forecast said a normal day. Reality: a cold snap sends demand 40% above forecast, and the market suddenly needs every MW it can get, including yours. The day-ahead plan is broken. What does your bid do to the price now?",
         hours: 24,
         demand: null,
         forecastAccuracy: 0.6, // Reality deviates: cold snap
@@ -155,7 +155,7 @@
         ],
         plantCost: 50,
         lesson:
-          "Demand blew past the forecast, the whole stack ran, and you were the marginal plant — your bid set the national price. In the real grid, the gap between the day-ahead plan and reality doesn't vanish: it becomes imbalance, settled at prices like the ones you fought in Balance the Grid.",
+          "Demand blew past the forecast, the whole stack ran, and you were the marginal plant. Your bid set the national price. In the real grid, the gap between the day-ahead plan and reality doesn't vanish: it becomes imbalance, settled at prices like the ones you fought in Balance the Grid.",
       },
     ],
   };
@@ -361,7 +361,7 @@
     el.campaignSummary.hidden = false;
     el.campaignTitle.textContent = `Campaign complete: €${Math.round(state.cumulativeProfit)} total`;
     el.campaignBody.textContent =
-      "You've seen four faces of the same auction: a calm market, a scarcity peak, a renewable flood, and the day your own bid set the national price. The market isn't magic — it's individual bids, stacked cheapest-first, with one clearing price for all.";
+      "You've seen four faces of the same auction: a calm market, a scarcity peak, a renewable flood, and the day your own bid set the national price. No magic behind any of it. Individual bids, stacked cheapest-first, one clearing price for all.";
   }
 
   function applyLevel(name) {
@@ -377,7 +377,7 @@
         "<p><strong>Day 4:</strong> cold snap — demand beats the forecast and your bid sets the national price.</p>" +
         "<details><summary>How real is this?</summary><p>Very: European power exchanges run exactly this kind of day-ahead auction every day, and the marginal bid sets one price for all. <a href=\"/learn\">How it works in the real grid →</a></p></details>"
       : "<p>You own one gas power plant. It costs you €40 to make each unit of power, and you tell the market the price you want for it — that's your bid.</p>" +
-        "<p>The market buys from the cheapest plants first, until demand is covered. Here's the twist: <strong>everyone who runs gets paid the price of the last plant needed</strong> — not their own bid.</p>" +
+        "<p>The market buys from the cheapest plants first, until demand is covered. And <strong>everyone who runs gets paid the price of the last plant needed</strong>, not their own bid.</p>" +
         "<p>Four days, each with its own weather and its own lesson. Bid low and you always run (but maybe at a loss); bid high and you might not run at all. Find the sweet spot.</p>";
 
     el.note.innerHTML = note;

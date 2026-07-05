@@ -70,7 +70,7 @@ const CAMPAIGNS = [
     day: 2,
     title: "The Battery",
     description:
-      "You've installed a home battery. At noon, the price goes negative — you get paid to charge! Buy low, discharge high. Storage flattens the price across the day.",
+      "You've installed a home battery. At noon the price goes negative: you get paid to charge. Buy low, discharge high. Storage flattens the price across the day.",
     prices: [
       70, 65, 60, 50, 40, 30, 20, 10, 5, -5, -10, 0, 5, 20, 40, 60, 70, 80,
       85, 80, 75, 70, 65, 60,
@@ -558,7 +558,7 @@ function validateSchedule(day, level) {
 
 function getConstraintError(day, level) {
   if (gameState.currentDay >= 2) {
-    return "Street congestion — the local transformer can only handle 10 kW at once. Spread your loads across different hours.";
+    return "Street congestion: the local transformer can only handle 10 kW at once. Spread your loads across different hours.";
   }
   return "Check load deadlines and comfort constraints.";
 }
@@ -617,19 +617,19 @@ document.addEventListener("DOMContentLoaded", () => {
 function showCampaignEnd() {
   document.getElementById("game-container").innerHTML = `
     <div class="campaign-summary">
-      <h2>Campaign Complete!</h2>
+      <h2>Campaign complete</h2>
       <p>Over four days, you learned to shift your home's consumption to cheap and clean hours.</p>
       <p>Now imagine two million households doing what you just did...</p>
       <div id="epilogue-reveal"></div>
-      <button class="game-button" onclick="location.reload()">Start Over</button>
+      <button class="game-button" onclick="location.reload()">Start over</button>
     </div>
   `;
 
   // Show epilogue visualization
   setTimeout(() => {
     document.getElementById("epilogue-reveal").innerHTML = `
-      <p><strong>The result:</strong> The evening peak flattens. Gas plants stay offline. The grid you balanced in Game 1 is now steady from below.</p>
-      <p>You've been a power plant all along — just one that stores demand instead of making energy.</p>
+      <p>The evening peak flattens. Gas plants stay offline. The grid you balanced in the first game is now steady from below.</p>
+      <p>You've been a power plant all along: one that moves demand instead of making energy.</p>
     `;
   }, 500);
 

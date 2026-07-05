@@ -30,19 +30,19 @@
     explore: [
       {
         day: 1,
-        title: "Day 1: Island — You balance alone",
-        scenario: "It's a Tuesday. You're the TSO for your country. Your frequency is yours alone. No neighbours to help. A wobble hits — demand spikes 300 MW. Can you balance it with your own reserves?",
+        title: "Day 1: You balance alone",
+        scenario: "It's a Tuesday. You're the TSO for your country. Your frequency is yours alone, and no neighbours can help. A wobble hits: demand spikes 300 MW. Can you balance it with your own reserves?",
         coupled: false,
         demand_pattern: "normal",
         disturbance_mw: 300,
         disturbance_at: 10,
         reserves_cost: 60,
         solo_cost_estimate: 18000, // 300 * 60
-        lesson: "Alone, every wobble is entirely yours — and so is the bill. Every MW of help had to come from your own expensive reserves. Remember this day.",
+        lesson: "Alone, every wobble is entirely yours, and so is the bill. Every MW of help had to come from your own expensive reserves. Remember this day.",
       },
       {
         day: 2,
-        title: "Day 2: Connect — Your wheel is joined to everyone's",
+        title: "Day 2: Your wheel joins everyone else's",
         scenario: "Same Tuesday, same wobbles. But now your grid is coupled to the continent. The same demand spike hits. Watch what happens.",
         coupled: true,
         demand_pattern: "normal",
@@ -51,12 +51,12 @@
         reserves_cost: 60,
         solo_cost_estimate: 18000,
         netting_savings: 0.4, // 40% cheaper due to netting + shared inertia
-        lesson: "The same wobble, but the continent's huge shared machine absorbed most of it — your frequency barely moved. And a neighbour's surplus cancelled part of your shortfall before any reserves started. Same day, 40% cheaper.",
+        lesson: "The same wobble, but the continent's huge shared machine absorbed most of it; your frequency barely moved. And a neighbour's surplus cancelled part of your shortfall before any reserves started. Same day, 40% cheaper.",
       },
       {
         day: 3,
-        title: "Day 3: Reactor trip — A plant in France fails",
-        scenario: "Wednesday afternoon. A nuclear reactor in France suddenly trips offline — 1000 MW gone. The frequency dips everywhere on the continent at the same instant, including in your country. Watch what your own plants do about a French problem, without anyone asking them.",
+        title: "Day 3: A reactor trips in France",
+        scenario: "Wednesday afternoon. A nuclear reactor in France suddenly trips offline. 1000 MW, gone. The frequency dips everywhere on the continent at the same instant, including in your country. Watch what your own plants do about a French problem, without anyone asking them.",
         coupled: true,
         demand_pattern: "normal",
         disturbance_mw: 1000,
@@ -65,11 +65,11 @@
         reserves_cost: 60,
         solo_cost_estimate: 60000,
         netting_savings: 0.5,
-        lesson: "Your plants pushed back within seconds without being asked — the automatic smoothing from the first game, now working across a whole continent, because a shared frequency is a shared problem. Then the cheapest available help was called up across borders — yours — and you got paid for it. Solidarity here isn't policy; it's physics.",
+        lesson: "Your plants pushed back within seconds without being asked. That's the automatic smoothing from the first game, working across a whole continent now, because a shared frequency is a shared problem. Then the cheapest available help was called up across borders (yours), and you got paid for it. Solidarity here isn't policy; it's physics.",
       },
       {
         day: 4,
-        title: "Day 4: The split — A border line trips",
+        title: "Day 4: The split",
         scenario: "Thursday evening. A major interconnector between your region and the continent trips offline mid-crisis. Your side islands. You're alone again, mid-emergency, with only your own reserves. Can you survive?",
         coupled: true,
         will_split: true,
@@ -84,7 +84,7 @@
     operate: [
       {
         day: 1,
-        title: "Day 1: Island — Balancing alone",
+        title: "Day 1: Balancing alone",
         scenario: "You're the TSO for the Netherlands. Frequency is yours to manage, your reserves to activate. A 400 MW demand spike hits. Your aFRR activation costs ~€80/MWh × 400 MW = €32k.",
         coupled: false,
         demand_pattern: "normal",
@@ -96,8 +96,8 @@
       },
       {
         day: 2,
-        title: "Day 2: Connect — Continental coupling",
-        scenario: "Same day, same demand pattern — but now your grid is synchronized with Germany and France. The same 400 MW spike hits. Shared inertia softens the dip, and IGCC imbalance netting cancels nearly half your shortfall against neighbours' surpluses before any reserves activate.",
+        title: "Day 2: Coupled to the continent",
+        scenario: "Same day, same demand pattern, but now your grid is synchronized with Germany and France. The same 400 MW spike hits. Shared inertia softens the dip, and IGCC imbalance netting cancels nearly half your shortfall against neighbours' surpluses before any reserves activate.",
         coupled: true,
         demand_pattern: "normal",
         disturbance_mw: 400,
@@ -105,12 +105,12 @@
         reserves_cost: 80,
         solo_cost_estimate: 32000,
         netting_savings: 0.45,
-        lesson: "Same disturbance, nearly half the reserve activation. Two reasons: shared inertia means your wobble barely dents the continental machine, and imbalance netting cancels your shortfall against someone else's surplus — free balancing, before a single bid is activated. Cooperation saved €14,400 today.",
+        lesson: "Same disturbance, nearly half the reserve activation. Two reasons: shared inertia means your wobble barely dents the continental machine, and imbalance netting cancels your shortfall against someone else's surplus. Free balancing, before a single bid is activated. Cooperation saved €14,400 today.",
       },
       {
         day: 3,
-        title: "Day 3: Reactor trip — Cross-border dispatch (PICASSO)",
-        scenario: "A 1 GW French reactor trips. Frequency dips across the whole synchronous area. Within seconds, FCR everywhere — including yours — pushes back automatically. Then PICASSO activates the cheapest aFRR bids across borders: your providers, at €60/MWh, undercut France's own reserves at €80/MWh.",
+        title: "Day 3: Cross-border rescue (PICASSO)",
+        scenario: "A 1 GW French reactor trips. Frequency dips across the whole synchronous area. Within seconds, FCR everywhere, including yours, pushes back automatically. Then PICASSO activates the cheapest aFRR bids across borders: your providers, at €60/MWh, undercut France's own reserves at €80/MWh.",
         coupled: true,
         demand_pattern: "normal",
         disturbance_mw: 1000,
@@ -120,12 +120,12 @@
         cross_border_price: 60,
         solo_cost_estimate: 80000,
         netting_savings: 0.4,
-        lesson: "First inertia and continent-wide FCR arrested the dip — automatic, within seconds, no orders given. Then aFRR was dispatched cheapest-first across Europe via PICASSO, and since your bids sat below the cross-border marginal price, helping France turned a profit. Cooperation isn't charity.",
+        lesson: "First inertia and continent-wide FCR arrested the dip: automatic, within seconds, no orders given. Then aFRR was dispatched cheapest-first across Europe via PICASSO, and since your bids sat below the cross-border marginal price, helping France turned a profit. Cooperation isn't charity.",
       },
       {
         day: 4,
-        title: "Day 4: The split — Resynchronization crisis",
-        scenario: "Evening peak, high demand — and you're running lean on reserves, because days 2–3 taught you that cooperation is cheap. Then a 380 kV interconnector trips and your region splits from the continent. Two grids now, two frequencies. Nobody's surplus can reach you across the gap. Survive on what you kept.",
+        title: "Day 4: The split",
+        scenario: "Evening peak, high demand, and you're running lean on reserves, because days 2–3 taught you that cooperation is cheap. Then a 380 kV interconnector trips and your region splits from the continent. Two grids now, two frequencies. Nobody's surplus can reach you across the gap. Survive on what you kept.",
         coupled: true,
         will_split: true,
         split_at: 15,
@@ -134,7 +134,7 @@
         disturbance_at: 8,
         reserves_cost: 90,
         solo_cost_estimate: 45000,
-        lesson: "Europe has split for real — in 2006, in 2021, and Iberia went dark in 2025. The split day asks the only question that matters: did you keep enough reserves to stand alone? Balancing cooperation's savings against self-reliance is the real TSO job.",
+        lesson: "Europe has split for real: in 2006, in 2021, and in April 2025, when Spain and Portugal went dark. The split day asks the only question that matters: did you keep enough reserves to stand alone? Balancing cooperation's savings against self-reliance is the real TSO job.",
       },
     ],
   };
@@ -343,24 +343,24 @@
     el.dayResults.hidden = false;
     if (state.blackout_today) {
       if (state.split_occurred) {
-        el.dayResultsTitle.textContent = "⚠ Blackout — the split isolated you mid-crisis";
+        el.dayResultsTitle.textContent = "⚠ Blackout: the split isolated you mid-crisis";
         el.dayResultsBody.textContent = `Your frequency dipped below 49.5 Hz when the interconnector tripped. You didn't have enough reserves to survive alone. This is why TSOs don't rely entirely on cooperation.`;
       } else {
-        el.dayResultsTitle.textContent = "⚠ Blackout — frequency collapse";
+        el.dayResultsTitle.textContent = "⚠ Blackout: frequency collapse";
         el.dayResultsBody.textContent = `Your frequency dipped below 49.5 Hz and stayed there too long. In the real grid, automatic load shedding would already be switching customers off to stop a full collapse.`;
       }
     } else {
       if (state.split_occurred) {
-        el.dayResultsTitle.textContent = `✅ Island survived — cost €${Math.round(actual_cost)}`;
+        el.dayResultsTitle.textContent = `✅ Island survived: cost €${Math.round(actual_cost)}`;
         el.dayResultsBody.textContent = `You kept your island alive on your own reserves until resynchronization. That's the campaign's hard lesson: enjoy cheap cooperation while the machine is whole, and hold enough reserves for the day it isn't.`;
       } else if (scenario.coupled) {
-        el.dayResultsTitle.textContent = `✅ Day ${currentDay} — cost €${Math.round(actual_cost)}`;
+        el.dayResultsTitle.textContent = `✅ Day ${currentDay}: cost €${Math.round(actual_cost)}`;
         const savings = scenario.netting_savings ? (base_cost - actual_cost) : 0;
         el.dayResultsBody.textContent = savings > 0
           ? `Cooperation saved €${Math.round(savings)}. Imbalance netting and continental inertia made this day cheap.`
           : `Day completed. Interconnection helped you stay stable.`;
       } else {
-        el.dayResultsTitle.textContent = `✅ Day ${currentDay} alone — cost €${Math.round(actual_cost)}`;
+        el.dayResultsTitle.textContent = `✅ Day ${currentDay} alone: cost €${Math.round(actual_cost)}`;
         el.dayResultsBody.textContent = `You balanced alone. Expensive and risky. This is why every TSO wants interconnections.`;
       }
     }
@@ -406,7 +406,7 @@
       <p><strong>Total balancing cost across 4 days: €${Math.round(total_cost)}</strong></p>
       <p>You learned why Europe is one synchronous area: shared inertia absorbs wobbles, imbalance netting cuts costs, cooperation is cheaper. But when the split happened on day 4, you needed reserves you'd built up. Gold required threading the needle: cooperate for cost, stay ready to stand alone.</p>
       <p>${survived_split ? "✅ You survived the split." : "❌ The split isolated you mid-crisis and you blacked out."}</p>
-      <p>${stars >= 3 ? "⭐⭐⭐ Perfect campaign — you balanced cooperation and self-reliance." : stars >= 2 ? "⭐⭐ Good campaign — but could have optimized better." : "⭐ Expensive campaign — cooperation saves money, but you also need reserves."}</p>
+      <p>${stars >= 3 ? "⭐⭐⭐ Perfect campaign: you balanced cooperation and self-reliance." : stars >= 2 ? "⭐⭐ Good campaign, with money left on the table." : "⭐ Expensive campaign. Cooperation saves money; use more of it."}</p>
     `;
 
     if (medal) {
@@ -416,21 +416,21 @@
 
   function applyLevel(name) {
     level = name;
-    const hint = name === "operate" ? "Real TSO scenarios, real reserve costs, real platforms." : "Plain language. One shared machine — and the day it splits.";
+    const hint = name === "operate" ? "Real TSO scenarios, real reserve costs, real platforms." : "Plain language. One shared machine, and the day it splits.";
     el.levelHint.textContent = hint;
 
     const note = name === "operate"
-      ? `<p>A four-day campaign across the continental <term data-term="synchronous_area">synchronous area</term> — one machine from Lisbon to Istanbul.</p>
-         <p><strong>Day 1:</strong> island operation — every disturbance met by your own <term data-term="reserve">reserves</term>, at full price.</p>
-         <p><strong>Day 2:</strong> coupled to the continent — shared inertia softens the dip, and <term data-term="igcc">IGCC</term> netting cancels imbalances before reserves activate.</p>
-         <p><strong>Day 3:</strong> a French reactor trips — <term data-term="fcr">FCR</term> reacts continent-wide, then <term data-term="picasso">PICASSO</term> dispatches the cheapest <term data-term="afrr">aFRR</term> across borders.</p>
-         <p><strong>Day 4:</strong> the split — an <term data-term="interconnector">interconnector</term> trips, the machine tears in two, and only your own reserves count.</p>
+      ? `<p>A four-day campaign across the continental <term data-term="synchronous_area">synchronous area</term>: one machine from Lisbon to Istanbul.</p>
+         <p><strong>Day 1:</strong> island operation. Every disturbance is met by your own <term data-term="reserve">reserves</term>, at full price.</p>
+         <p><strong>Day 2:</strong> coupled to the continent. Shared inertia softens the dip, and <term data-term="igcc">IGCC</term> netting cancels imbalances before reserves activate.</p>
+         <p><strong>Day 3:</strong> a French reactor trips. <term data-term="fcr">FCR</term> reacts continent-wide, then <term data-term="picasso">PICASSO</term> dispatches the cheapest <term data-term="afrr">aFRR</term> across borders.</p>
+         <p><strong>Day 4:</strong> the split. An <term data-term="interconnector">interconnector</term> trips, the machine tears in two, and only your own reserves count.</p>
          <p><strong>Gold requires both:</strong> the low costs of cooperation on days 2–3 <em>and</em> surviving day 4 alone. That's the TSO dilemma.</p>`
       : `<p>Four days, one lesson: you were never balancing alone.</p>
          <p><strong>Day 1:</strong> your grid by itself. Twitchy, hard, expensive.</p>
-         <p><strong>Day 2:</strong> your wheel is joined to everyone else's. The same wobble barely registers — a huge, heavy machine is very hard to shake.</p>
-         <p><strong>Day 3:</strong> a power plant in France fails, and the dip shows up on your dials at the same instant. Your plants help automatically — and you get paid for it.</p>
-         <p><strong>Day 4:</strong> the split. A border line fails, the machine tears into two islands with two frequencies, and you're on your own again — mid-crisis.</p>
+         <p><strong>Day 2:</strong> your wheel is joined to everyone else's. The same wobble barely registers; a huge, heavy machine is very hard to shake.</p>
+         <p><strong>Day 3:</strong> a power plant in France fails, and the dip shows up on your dials at the same instant. Your plants help automatically, and you get paid for it.</p>
+         <p><strong>Day 4:</strong> the split. A border line fails, the machine tears into two islands with two frequencies, and you're on your own again, mid-crisis.</p>
          <p><strong>The lesson:</strong> being connected keeps everyone steady and saves everyone money. But keep enough reserves of your own for the day the connection breaks.</p>`
 
     el.note.innerHTML = note;

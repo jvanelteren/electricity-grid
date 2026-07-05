@@ -48,7 +48,7 @@ window.medalSystem = {
     medal.textContent = "★";
     medal.title = known
       ? this.LABELS[level] + " medal earned"
-      : "No medal yet — play to earn one";
+      : "No medal yet. Play to earn one";
     return medal;
   },
 
@@ -80,7 +80,7 @@ window.medalSystem = {
 
   _toast: function (level) {
     const sub =
-      level === "gold" ? "Top marks — well played!" : "Nice! Keep going for gold.";
+      level === "gold" ? "Top marks. Well played!" : "Nice! Keep going for gold.";
     const toast = document.createElement("div");
     toast.className = "medal-toast";
     toast.innerHTML =

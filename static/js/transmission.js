@@ -47,7 +47,7 @@
         wind_cost: 20,
         coal_cost: 50,
         forgivingLimits: true,
-        lesson: "You adjusted generation to match load. All wires stayed green — no congestion.",
+        lesson: "You adjusted generation to match load. All wires stayed green; no congestion.",
       },
       {
         round: 2,
@@ -65,7 +65,7 @@
       {
         round: 3,
         title: "Round 3: Storm (wind flood)",
-        scenario: "A storm floods the north with cheap wind — more than ever. The south still needs power, but the middle wire can only carry so much of it. Someone asks: why don't we just build more wind? Play the round and find out.",
+        scenario: "A storm floods the north with more cheap wind than ever. The south still needs power, but the middle wire can only carry so much of it. Someone asks: why don't we just build more wind? Play the round and find out.",
         wind_capacity: 600,
         coal_capacity: 500,
         load_north: 150,
@@ -73,12 +73,12 @@
         wind_cost: 15,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "Wind is cheap but far. You had to waste wind output and pay for expensive coal down south. This is why transmission constraints matter — it's not just about building more renewables.",
+        lesson: "Wind is cheap but far. You had to waste wind output and pay for expensive coal down south. That's why transmission matters: building more renewables isn't enough if the power can't reach anyone.",
       },
       {
         round: 4,
         title: "Round 4: System stress",
-        scenario: "High demand, tight margins. Real operators never load a wire to the brim: if any one wire fails, its power instantly piles onto the others. Run the grid with room to spare — could yours survive losing a wire?",
+        scenario: "High demand, tight margins. Real operators never load a wire to the brim: if any one wire fails, its power instantly piles onto the others. Run the grid with room to spare. Could yours survive losing a wire?",
         wind_capacity: 400,
         coal_capacity: 500,
         load_north: 250,
@@ -86,7 +86,7 @@
         wind_cost: 20,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "When one wire fails, its power doesn't wait — it instantly crowds onto the neighbouring wires. If those are already near their limit, they fail too: a cascade, and a whole region goes dark. That's why grid operators always keep spare room on every wire.",
+        lesson: "When one wire fails, its power doesn't wait. It instantly crowds onto the neighbouring wires, and if those are already near their limit, they fail too: a cascade, and a whole region goes dark. That's why grid operators always keep spare room on every wire.",
       },
     ],
     operate: [
@@ -101,12 +101,12 @@
         wind_cost: 20,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "The market's plan: 400 MW wind, 0 MW coal. Wind serves the north (200 MW) and sends 200 MW south through the middle line — well inside its 300 MW limit. The cheapest plan fits, so redispatch costs €0. It won't stay that easy.",
+        lesson: "The market's plan: 400 MW wind, 0 MW coal. Wind serves the north (200 MW) and sends 200 MW south through the middle line, well inside its 300 MW limit. The cheapest plan fits, so redispatch costs €0. It won't stay that easy.",
       },
       {
         round: 2,
         title: "Round 2: Evening peak & bottleneck",
-        scenario: "Evening peak. Demand: 100 MW north, 400 MW south. The market wants wind to serve everything (€20 < coal's €50) — which loads line N–S right up to its 300 MW limit, zero margin. Every MW you shift from wind to coal costs the €30/MWh spread. Keep all lines green at the lowest cost.",
+        scenario: "Evening peak. Demand: 100 MW north, 400 MW south. The market wants wind to serve everything (€20 < coal's €50), which loads line N–S right up to its 300 MW limit. Zero margin. Every MW you shift from wind to coal costs the €30/MWh spread. Keep all lines green at the lowest cost.",
         wind_capacity: 400,
         coal_capacity: 500,
         load_north: 100,
@@ -114,12 +114,12 @@
         wind_cost: 20,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "The cheapest plan filled line N–S to the brim. Shifting generation from far wind to local coal relieves it — at the €30/MWh spread between them. That premium for making the plan fit the wires is redispatch, and real TSOs pay it every evening peak.",
+        lesson: "The cheapest plan filled line N–S to the brim. Shifting generation from far wind to local coal relieves it, at the €30/MWh spread between them. That premium for making the plan fit the wires is redispatch, and real TSOs pay it every evening peak.",
       },
       {
         round: 3,
         title: "Round 3: Renewable flood (Germany)",
-        scenario: "Storm forecast: 600 MW of wind at €15/MWh. Demand: 150 MW north, 350 MW south. The market plan pushes 350 MW through the N–S bottleneck — 50 MW more than its 300 MW limit. Cheap wind must be held back and coal run in the south, at the €35/MWh spread. Make it fit.",
+        scenario: "Storm forecast: 600 MW of wind at €15/MWh. Demand: 150 MW north, 350 MW south. The market plan pushes 350 MW through the N–S bottleneck, 50 MW more than its 300 MW limit. Cheap wind must be held back and coal run in the south, at the €35/MWh spread. Make it fit.",
         wind_capacity: 600,
         coal_capacity: 500,
         load_north: 150,
@@ -127,12 +127,12 @@
         wind_cost: 15,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "Cheap wind sat idle behind the bottleneck while pricier coal ran in the south — you paid the spread on every displaced MW. Germany pays billions per year for exactly this: northern wind that can't reach southern demand. 'Just build more wind' isn't enough; the wires have to get it there.",
+        lesson: "Cheap wind sat idle behind the bottleneck while pricier coal ran in the south, and you paid the spread on every displaced MW. Germany pays billions per year for exactly this: northern wind that can't reach southern demand. 'Just build more wind' isn't enough; the wires have to get it there.",
       },
       {
         round: 4,
         title: "Round 4: N-1 security",
-        scenario: "Tight margins: demand 250 MW north, 350 MW south. A real control room must keep the grid safe even if any single line fails (the N-1 rule) — a failed line's flow instantly reroutes over the rest, so a line running near its limit is a cascade waiting to happen. Dispatch so that every line keeps healthy headroom, not just legal flow.",
+        scenario: "Tight margins: demand 250 MW north, 350 MW south. A real control room must keep the grid safe even if any single line fails (the N-1 rule). A failed line's flow instantly reroutes over the rest, so a line running near its limit is a cascade waiting to happen. Dispatch so that every line keeps healthy headroom, not just legal flow.",
         wind_capacity: 400,
         coal_capacity: 500,
         load_north: 250,
@@ -140,7 +140,7 @@
         wind_cost: 20,
         coal_cost: 50,
         forgivingLimits: false,
-        lesson: "TSOs don't just keep today's flows legal — they keep the grid safe against every possible single failure at once (N-1 security). Control rooms run contingency simulations around the clock and hold reserves ready. Professional paranoia: that's the real job.",
+        lesson: "TSOs don't just keep today's flows legal; they keep the grid safe against every possible single failure at once (N-1 security). Control rooms run contingency simulations around the clock and hold reserves ready. Professional paranoia: that's the real job.",
       },
     ],
   };
@@ -352,11 +352,11 @@
     el.levelHint.textContent = hint;
 
     const note = name === "operate"
-      ? "<p>The day-ahead market picks the cheapest plants — but power can't teleport, and every line has an MW limit.</p>" +
-        "<p><strong>Your only lever:</strong> you can't steer power down a chosen line; you can only change where it's generated. Turn down the cheap-but-far plant, turn up the expensive-but-close one, until every line is inside its limit. The price difference between them is the <term data-term=\"congestion\">congestion</term> cost you pay — <strong>redispatch</strong>, billions per year across Europe.</p>" +
+      ? "<p>The day-ahead market picks the cheapest plants, but power can't teleport, and every line has an MW limit.</p>" +
+        "<p><strong>Your only lever:</strong> you can't steer power down a chosen line; you can only change where it's generated. Turn down the cheap-but-far plant, turn up the expensive-but-close one, until every line is inside its limit. The price difference between them is what <term data-term=\"congestion\">congestion</term> costs you: <strong>redispatch</strong>, billions per year across Europe.</p>" +
         "<p><strong>Four rounds:</strong> calm day → evening peak (congestion) → storm (cheap wind trapped behind a bottleneck) → tight margins (<term data-term=\"n_minus_one\">N-1</term>: stay safe against any single line failing).</p>"
       : "<p>The market picked the cheapest power plants. Your problem: the wires between them and the cities can only carry so much.</p>" +
-        "<p>You can't push power down a particular wire — it flows where physics sends it. All you can do is change where it's <em>made</em>: less from the cheap faraway plant, more from the expensive nearby one, until no wire is overloaded. The extra money that costs is the price of the grid's shape.</p>";
+        "<p>You can't push power down a particular wire; it flows where physics sends it. All you can do is change where it's <em>made</em>: less from the cheap faraway plant, more from the expensive nearby one, until no wire is overloaded. The extra money that costs is the price of the grid's shape.</p>";
 
     el.note.innerHTML = note;
     el.levelButtons.forEach(function (btn) {
