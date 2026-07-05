@@ -35,8 +35,8 @@ GAMES: list[Game] = [
         title="Build the Energy Mix",
         summary="Pick your power plants and cover the whole day. The cheapest, cleanest plants don't take orders. They follow the weather.",
         concept=(
-            "Some plants obey you. The others obey the weather, and those happen "
-            "to be the cheapest and cleanest. Build a mix that covers every hour "
+            "Some plants obey you. The others obey the weather, and those are "
+            "the cheapest and cleanest. Build a mix that covers every hour "
             "anyway, without wrecking your budget or the climate."
         ),
         available=True,
