@@ -70,7 +70,7 @@ const CAMPAIGNS = [
     day: 2,
     title: "The Battery",
     description:
-      "You've installed a home battery. At noon, the price goes negative — you get paid to charge! Buy low, discharge high. Notice how storage lets you smooth the price.",
+      "You've installed a home battery. At noon, the price goes negative — you get paid to charge! Buy low, discharge high. Storage flattens the price across the day.",
     prices: [
       70, 65, 60, 50, 40, 30, 20, 10, 5, -5, -10, 0, 5, 20, 40, 60, 70, 80,
       85, 80, 75, 70, 65, 60,

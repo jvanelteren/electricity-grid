@@ -33,10 +33,10 @@ GAMES: list[Game] = [
     Game(
         slug="mix",
         title="Build the Energy Mix",
-        summary="Pick your power plants and cover the whole day. One catch: the cheapest, cleanest ones don't take orders — they follow the weather.",
+        summary="Pick your power plants and cover the whole day. The cheapest, cleanest ones don't take orders — they follow the weather.",
         concept=(
             "Some plants obey you. The others obey the weather — and those are "
-            "exactly the cheapest, cleanest ones. Build a mix that covers every "
+            "the cheapest, cleanest ones. Build a mix that covers every "
             "hour anyway, and keep it affordable and clean."
         ),
         available=True,
